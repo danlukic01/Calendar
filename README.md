@@ -1,3 +1,4 @@
+
 # Calendar
 
 This project will contain a multi-calendar date calculation library and an ASP.NET Core application for storing calculated intervals. It aims to unify date operations across calendars such as Gregorian and Julian while persisting interval results in a database.
@@ -33,3 +34,8 @@ curl -X POST \
 ```
 
 The service will return the number of days between the dates and store the interval record.
+=======
+# Calendar API
+
+This repository contains a basic ASP.NET Core Web API project with placeholder controllers and data models. The project demonstrates an EF Core setup using SQLite for persistence. Migrations were not generated because .NET tooling isn't available in this environment.
+
