@@ -20,6 +20,7 @@
         <li>Julian: <span id="julian-date"></span></li>
         <li>Mayan Long Count: <span id="mayan-date"></span></li>
         <li>Tzolkin: <span id="tzolkin-date"></span></li>
+        <li>Haab: <span id="haab-date"></span></li>
     </ul>
 
     <script>
@@ -41,6 +42,7 @@
         const julianSpan = document.getElementById('julian-date');
         const mayanSpan = document.getElementById('mayan-date');
         const tzolkinSpan = document.getElementById('tzolkin-date');
+        const haabSpan = document.getElementById('haab-date');
 
         fetch('/api/date/current')
             .then(res => res.json())
@@ -49,6 +51,7 @@
                 julianSpan.textContent = data.julianDate;
                 mayanSpan.textContent = data.mayanLongCount;
                 tzolkinSpan.textContent = data.tzolkin;
+                haabSpan.textContent = data.haab;
             });
     </script>
 </body>
