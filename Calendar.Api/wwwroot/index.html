@@ -4,8 +4,60 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lotto Selector</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f7fa;
+            display: flex;
+            justify-content: center;
+            padding: 40px 0;
+            color: #333;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 20px 30px;
+            max-width: 600px;
+            width: 90%;
+        }
+
+        h1 {
+            margin-top: 0;
+            font-size: 1.5rem;
+            text-align: center;
+        }
+
+        select {
+            width: 100%;
+            padding: 8px;
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        #constant-display {
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            padding: 2px 0;
+        }
+
+        #calculation-area ul {
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
+    <div class="card">
     <h1>Select a lottery</h1>
     <select id="lotto-select">
         <option value="Ozlotto">Ozlotto</option>
@@ -71,12 +123,17 @@
         }
 
         function updateCalculations() {
-            if (select.value !== 'Ozlotto' || !currentDates) {
+            const constant = lotteryConstants[select.value];
+            if (!constant || !currentDates) {
                 calcArea.innerHTML = '';
                 return;
             }
 
-            const digitsSum = 1 + 2 + 3 + 9 + 5 + 8 + 3 + 0;
+            const digitsSum = constant
+                .toString()
+                .split('')
+                .map(Number)
+                .reduce((a, b) => a + b, 0);
             const g = new Date(currentDates.gregorianDate);
             const gDay = g.getUTCDate();
             const gMonth = g.getUTCMonth() + 1;
@@ -141,5 +198,6 @@
                 updateCalculations();
             });
     </script>
+    </div>
 </body>
 </html>
