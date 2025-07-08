@@ -23,4 +23,10 @@ curl -X POST http://localhost:5000/api/calculations \
 ```
 The response will include the generated dates for the next three days in all supported calendars.
 
+### Get current date conversion
+```
+curl http://localhost:5000/api/date/current
+```
+Returns the current date expressed in Gregorian, Julian, Mayan and Tzolkin forms.
+
 Migrations are not included because `dotnet ef` tools were unavailable in this environment.
