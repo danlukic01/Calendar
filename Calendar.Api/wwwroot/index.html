@@ -13,6 +13,7 @@
         <option value="Tattslotto">Tattslotto</option>
     </select>
     <p id="constant-display"></p>
+    <div id="calculation-area"></div>
 
     <h2>Current Date</h2>
     <ul id="date-info">
@@ -25,17 +26,101 @@
 
     <script>
         const lotteryConstants = {
-            Ozlotto: 12395,
-            Powerball: 104116,
-            Tattslotto: 162109
+            Ozlotto: 12395830,
+            Powerball: 104116830,
+            Tattslotto: 162109830
         };
 
         const select = document.getElementById('lotto-select');
         const display = document.getElementById('constant-display');
+        const calcArea = document.getElementById('calculation-area');
+
+        let currentDates = null;
+
+        function jdnToJulian(jdn) {
+            let c = jdn + 32082;
+            let d = Math.floor((4 * c + 3) / 1461);
+            let e = c - Math.floor(1461 * d / 4);
+            let m = Math.floor((5 * e + 2) / 153);
+            const day = e - Math.floor((153 * m + 2) / 5) + 1;
+            const month = m + 3 - 12 * Math.floor(m / 10);
+            const year = d - 4800 + Math.floor(m / 10);
+            return { day, month, year };
+        }
+
+        const haabMonths = [
+            'Pop', "Wo'", 'Sip', "Sotz'", 'Sek', 'Xul', "Yaxk'in", 'Mol',
+            "Ch'en", 'Yax', 'Sak', 'Keh', 'Mak', "K'ank'in", 'Muwan', 'Pax',
+            "K'ayab", "Kumk'u", 'Wayeb'
+        ];
+
+        function parseMayan(str) {
+            const parts = str.split('.').map(Number);
+            return {
+                day: parts[4],
+                month: parts[3],
+                year: parts[0] * 144000 + parts[1] * 7200 + parts[2] * 360
+            };
+        }
+
+        function parseHaab(str) {
+            const pieces = str.split(' ');
+            const day = parseInt(pieces[0], 10);
+            const month = haabMonths.indexOf(pieces[1]) + 1;
+            return { day, month, year: 0 };
+        }
+
+        function updateCalculations() {
+            if (select.value !== 'Ozlotto' || !currentDates) {
+                calcArea.innerHTML = '';
+                return;
+            }
+
+            const digitsSum = 1 + 2 + 3 + 9 + 5 + 8 + 3 + 0;
+            const g = new Date(currentDates.gregorianDate);
+            const gDay = g.getUTCDate();
+            const gMonth = g.getUTCMonth() + 1;
+            const gYear = g.getUTCFullYear();
+
+            const g1 = digitsSum + gDay;
+            const g2 = digitsSum + gDay + gMonth;
+            const g3 = digitsSum + gDay + gMonth + gYear;
+
+            const jul = jdnToJulian(parseInt(currentDates.julianDate, 10));
+            const j1 = digitsSum + jul.day;
+            const j2 = digitsSum + jul.day + jul.month;
+            const j3 = digitsSum + jul.day + jul.month + jul.year;
+
+            const mayan = parseMayan(currentDates.mayanLongCount);
+            const m1 = digitsSum + mayan.day;
+            const m2 = digitsSum + mayan.day + mayan.month;
+            const m3 = digitsSum + mayan.day + mayan.month + mayan.year;
+
+            const haab = parseHaab(currentDates.haab);
+            const h1 = digitsSum + haab.day;
+            const h2 = digitsSum + haab.day + haab.month;
+            const h3 = digitsSum + haab.day + haab.month + haab.year;
+
+            calcArea.innerHTML = `<ul>
+                <li>Gregorian date: ${g1}</li>
+                <li>Gregorian date+month: ${g2}</li>
+                <li>Gregorian date+month+year: ${g3}</li>
+                <li>Julian date: ${j1}</li>
+                <li>Julian date+month: ${j2}</li>
+                <li>Julian date+month+year: ${j3}</li>
+                <li>Mayan date: ${m1}</li>
+                <li>Mayan date+month: ${m2}</li>
+                <li>Mayan date+month+year: ${m3}</li>
+                <li>Haab date: ${h1}</li>
+                <li>Haab date+month: ${h2}</li>
+                <li>Haab date+month+year: ${h3}</li>
+            </ul>`;
+        }
 
         select.addEventListener('change', () => {
             const value = lotteryConstants[select.value];
             display.textContent = value ? `Constant: ${value}` : '';
+            updateCalculations();
         });
 
         const gregorianSpan = document.getElementById('gregorian-date');
@@ -52,6 +137,8 @@
                 mayanSpan.textContent = data.mayanLongCount;
                 tzolkinSpan.textContent = data.tzolkin;
                 haabSpan.textContent = data.haab;
+                currentDates = data;
+                updateCalculations();
             });
     </script>
 </body>
