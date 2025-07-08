@@ -12,5 +12,22 @@
         <option value="Powerball">Powerball</option>
         <option value="Tattslotto">Tattslotto</option>
     </select>
+    <p id="constant-display"></p>
+
+    <script>
+        const lotteryConstants = {
+            Ozlotto: 12395,
+            Powerball: 104116,
+            Tattslotto: 162109
+        };
+
+        const select = document.getElementById('lotto-select');
+        const display = document.getElementById('constant-display');
+
+        select.addEventListener('change', () => {
+            const value = lotteryConstants[select.value];
+            display.textContent = value ? `Constant: ${value}` : '';
+        });
+    </script>
 </body>
 </html>
