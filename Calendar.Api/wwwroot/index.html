@@ -123,17 +123,25 @@
         }
 
         function updateCalculations() {
+
             const constant = lotteryConstants[select.value];
             if (!constant || !currentDates) {
+
+            if (select.value !== 'Ozlotto' || !currentDates) {
+
                 calcArea.innerHTML = '';
                 return;
             }
+
 
             const digitsSum = constant
                 .toString()
                 .split('')
                 .map(Number)
                 .reduce((a, b) => a + b, 0);
+
+            const digitsSum = 1 + 2 + 3 + 9 + 5 + 8 + 3 + 0;
+
             const g = new Date(currentDates.gregorianDate);
             const gDay = g.getUTCDate();
             const gMonth = g.getUTCMonth() + 1;
