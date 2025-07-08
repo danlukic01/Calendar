@@ -12,7 +12,7 @@ public class CalendarConversionService
             JulianDate = ToJulianString(gregorian),
             MayanLongCount = ToMayanLongCount(gregorian),
             Tzolkin = ToTzolkin(gregorian),
-            Haab = ToHaabPlaceholder(gregorian),
+            Haab = ToHaab(gregorian),
             CreatedAt = DateTime.UtcNow
         };
     }
@@ -65,8 +65,21 @@ public class CalendarConversionService
         return $"{number} {name}";
     }
 
-    private static string ToHaabPlaceholder(DateTime date)
+    private static readonly string[] HaabMonths = new[]
     {
-        return $"Haab-{date.DayOfYear % 365}";
+        "Pop", "Wo'", "Sip", "Sotz'", "Sek", "Xul", "Yaxk'in", "Mol",
+        "Ch'en", "Yax", "Sak", "Keh", "Mak", "K'ank'in", "Muwan", "Pax",
+        "K'ayab", "Kumk'u", "Wayeb"
+    };
+
+    private static string ToHaab(DateTime date)
+    {
+        int jdn = JulianDayNumber(date);
+        int days = jdn - 584283;
+        int count = (days + 348) % 365; // 0.0.0.0.0 = 8 Kumk'u
+        int month = count / 20;
+        int day = count % 20;
+        string monthName = HaabMonths[month];
+        return $"{day} {monthName}";
     }
 }
