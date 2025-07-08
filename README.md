@@ -2,6 +2,9 @@
 
 This project implements a simple multi‑calendar date calculation service based on the BRD requirements. It allows posting a start date and interval specification and returns the corresponding dates across several calendar systems.
 
+Date conversions for the Mayan Long Count and Tzolkin calendars use algorithms
+derived from the open source calendar utilities published by Fourmilab.
+
 ## Prerequisites
 - .NET SDK 7.0 or later
 - SQLite (default connection string is `Data Source=calendar.db`)
