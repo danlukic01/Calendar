@@ -17,6 +17,10 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
+// Serve default static files like wwwroot/index.html
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
 app.MapControllers();
 
 app.Run();
