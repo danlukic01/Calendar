@@ -14,6 +14,14 @@
     </select>
     <p id="constant-display"></p>
 
+    <h2>Current Date</h2>
+    <ul id="date-info">
+        <li>Gregorian: <span id="gregorian-date"></span></li>
+        <li>Julian: <span id="julian-date"></span></li>
+        <li>Mayan Long Count: <span id="mayan-date"></span></li>
+        <li>Tzolkin: <span id="tzolkin-date"></span></li>
+    </ul>
+
     <script>
         const lotteryConstants = {
             Ozlotto: 12395,
@@ -28,6 +36,20 @@
             const value = lotteryConstants[select.value];
             display.textContent = value ? `Constant: ${value}` : '';
         });
+
+        const gregorianSpan = document.getElementById('gregorian-date');
+        const julianSpan = document.getElementById('julian-date');
+        const mayanSpan = document.getElementById('mayan-date');
+        const tzolkinSpan = document.getElementById('tzolkin-date');
+
+        fetch('/api/date/current')
+            .then(res => res.json())
+            .then(data => {
+                gregorianSpan.textContent = data.gregorianDate;
+                julianSpan.textContent = data.julianDate;
+                mayanSpan.textContent = data.mayanLongCount;
+                tzolkinSpan.textContent = data.tzolkin;
+            });
     </script>
 </body>
 </html>
