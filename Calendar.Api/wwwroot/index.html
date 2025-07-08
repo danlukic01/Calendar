@@ -64,10 +64,11 @@
         <option value="Powerball">Powerball</option>
         <option value="Tattslotto">Tattslotto</option>
     </select>
+    <input type="date" id="date-picker" style="width:100%;padding:8px;margin-bottom:10px;">
     <p id="constant-display"></p>
     <div id="calculation-area"></div>
 
-    <h2>Current Date</h2>
+    <h2>Selected Date</h2>
     <ul id="date-info">
         <li>Gregorian: <span id="gregorian-date"></span></li>
         <li>Julian: <span id="julian-date"></span></li>
@@ -78,14 +79,15 @@
 
     <script>
         const lotteryConstants = {
-            Ozlotto: 12395830,
-            Powerball: 104116830,
-            Tattslotto: 162109830
+            Ozlotto: { constants: [21, 11] },
+            Powerball: { constant: 104116830 },
+            Tattslotto: { constant: 162109830 }
         };
 
         const select = document.getElementById('lotto-select');
         const display = document.getElementById('constant-display');
         const calcArea = document.getElementById('calculation-area');
+        const datePicker = document.getElementById('date-picker');
 
         let currentDates = null;
 
@@ -122,19 +124,48 @@
             return { day, month, year: 0 };
         }
 
+        function sumDigits(n) {
+            return n.toString().split('').map(Number).reduce((a, b) => a + b, 0);
+        }
+
+        function ozlottoCalculations(date) {
+            const dd = date.getUTCDate().toString().padStart(2, '0');
+            const mm = (date.getUTCMonth() + 1).toString().padStart(2, '0');
+            const yyyy = date.getUTCFullYear().toString();
+            const r1 = sumDigits('21' + dd + mm + yyyy);
+            const r2tmp = sumDigits(r1.toString() + '21');
+            const r2 = sumDigits(r2tmp + 9);
+            const r3 = sumDigits(r2 + r1 + 9);
+            const r4 = sumDigits(r1 + r2 + r3);
+            calcArea.innerHTML = `<ul>
+                <li>Rule 1: ${r1}</li>
+                <li>Rule 2: ${r2}</li>
+                <li>Rule 3: ${r3}</li>
+                <li>Rule 4: ${r4}</li>
+            </ul>`;
+        }
+
         function updateCalculations() {
 
-            const constant = lotteryConstants[select.value];
-            if (!constant || !currentDates) {
+            const config = lotteryConstants[select.value];
+            if (!config || !currentDates) {
                 calcArea.innerHTML = '';
                 return;
             }
 
-            const digitsSum = constant
+            if (select.value === 'Ozlotto') {
+                const g = new Date(currentDates.gregorianDate);
+                ozlottoCalculations(g);
+                display.textContent = `Constants: 21, 11`;
+                return;
+            }
+
+            const digitsSum = config.constant
                 .toString()
                 .split('')
                 .map(Number)
                 .reduce((a, b) => a + b, 0);
+            display.textContent = `Constant: ${config.constant}`;
 
             const g = new Date(currentDates.gregorianDate);
             const gDay = g.getUTCDate();
@@ -177,9 +208,11 @@
         }
 
         select.addEventListener('change', () => {
-            const value = lotteryConstants[select.value];
-            display.textContent = value ? `Constant: ${value}` : '';
             updateCalculations();
+        });
+
+        datePicker.addEventListener('change', () => {
+            loadDate(datePicker.value);
         });
 
         const gregorianSpan = document.getElementById('gregorian-date');
@@ -188,17 +221,23 @@
         const tzolkinSpan = document.getElementById('tzolkin-date');
         const haabSpan = document.getElementById('haab-date');
 
-        fetch('/api/date/current')
-            .then(res => res.json())
-            .then(data => {
-                gregorianSpan.textContent = data.gregorianDate;
-                julianSpan.textContent = data.julianDate;
-                mayanSpan.textContent = data.mayanLongCount;
-                tzolkinSpan.textContent = data.tzolkin;
-                haabSpan.textContent = data.haab;
-                currentDates = data;
-                updateCalculations();
-            });
+        function loadDate(dateString) {
+            fetch(`/api/date/convert?date=${dateString}`)
+                .then(res => res.json())
+                .then(data => {
+                    gregorianSpan.textContent = data.gregorianDate;
+                    julianSpan.textContent = data.julianDate;
+                    mayanSpan.textContent = data.mayanLongCount;
+                    tzolkinSpan.textContent = data.tzolkin;
+                    haabSpan.textContent = data.haab;
+                    currentDates = data;
+                    updateCalculations();
+                });
+        }
+
+        const today = new Date().toISOString().split('T')[0];
+        datePicker.value = today;
+        loadDate(today);
     </script>
     </div>
 </body>
