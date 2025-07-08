@@ -2,8 +2,9 @@
 
 This project implements a simple multi‑calendar date calculation service based on the BRD requirements. It allows posting a start date and interval specification and returns the corresponding dates across several calendar systems.
 
-Date conversions for the Mayan Long Count and Tzolkin calendars use algorithms
-derived from the open source calendar utilities published by Fourmilab.
+Date conversions for the Mayan Long Count, Tzolkin and Haab calendars use
+algorithms derived from the open source calendar utilities published by
+Fourmilab.
 
 ## Prerequisites
 - .NET SDK 7.0 or later
@@ -30,6 +31,7 @@ The response will include the generated dates for the next three days in all sup
 ```
 curl http://localhost:5000/api/date/current
 ```
-Returns the current date expressed in Gregorian, Julian, Mayan and Tzolkin forms.
+Returns the current date expressed in Gregorian, Julian, Mayan (Long Count),
+Tzolkin and Haab forms.
 
 Migrations are not included because `dotnet ef` tools were unavailable in this environment.
