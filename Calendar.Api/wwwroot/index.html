@@ -168,6 +168,8 @@
             const julianDay = parseInt(currentDates.julianDate.split('/')[0], 10);
             const r5 = CONST_21 + julianDay + 1;
             const r6 = CONST_21 - (julianDay + 1);
+            const tzolkinNumber = parseInt(currentDates.tzolkin.split(' ')[0], 10);
+            const r7 = (julianDay + 1) + tzolkinNumber + dd;
 
             const rule1Exp = `${CONST_21}+${dd}+${mm}+${yearDigits.join('+')}+${const11Digits.join('+')}`;
             const rule2Exp = `${r1Digits.join('+')}+${const21Digits.join('+')}+${CONST_9}`;
@@ -175,6 +177,7 @@
             const rule4Exp = r4Digits.join('+');
             const rule5Exp = `${CONST_21}+(${julianDay}+1)`;
             const rule6Exp = `${CONST_21}-(${julianDay}+1)`;
+            const rule7Exp = `(${julianDay}+1)+${tzolkinNumber}+${dd}`;
 
             calcArea.innerHTML = `<ul>
                 <li>Rule 1: ${rule1Exp} = <strong>${r1}</strong></li>
@@ -183,6 +186,7 @@
                 <li>Rule 4: sumDigits(${rule4Exp}) = <strong>${r4}</strong></li>
                 <li>Rule 5: ${rule5Exp} = <strong>${r5}</strong></li>
                 <li>Rule 6: ${rule6Exp} = <strong>${r6}</strong></li>
+                <li>Rule 7: ${rule7Exp} = <strong>${r7}</strong></li>
 
             </ul>`;
         }
