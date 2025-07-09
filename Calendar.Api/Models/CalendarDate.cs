@@ -8,6 +8,7 @@ public class CalendarDate
     public string MayanLongCount { get; set; } = string.Empty;
     public string Tzolkin { get; set; } = string.Empty;
     public string Haab { get; set; } = string.Empty;
+    public string HebrewDate { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
     public string? CreatedBy { get; set; }
 }

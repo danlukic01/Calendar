@@ -31,7 +31,7 @@ The response will include the generated dates for the next three days in all sup
 ```
 curl http://localhost:5000/api/date/current
 ```
-Returns the current date expressed in Gregorian, Julian, Mayan (Long Count),
+Returns the current date expressed in Gregorian, Julian, Hebrew, Mayan (Long Count),
 Tzolkin and Haab forms.
 
 Migrations are not included because `dotnet ef` tools were unavailable in this environment.

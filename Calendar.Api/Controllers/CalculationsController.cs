@@ -47,7 +47,8 @@ public class CalculationsController : ControllerBase
                 JulianDate = conv.JulianDate,
                 MayanLongCount = conv.MayanLongCount,
                 Tzolkin = conv.Tzolkin,
-                Haab = conv.Haab
+                Haab = conv.Haab,
+                HebrewDate = conv.HebrewDate
             };
             _context.IntervalCalculationResults.Add(result);
             calc.Results.Add(result);

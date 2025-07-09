@@ -14,6 +14,7 @@ public class CalendarConversionService
             MayanLongCount = ToMayanLongCount(dateOnly),
             Tzolkin = ToTzolkin(dateOnly),
             Haab = ToHaab(dateOnly),
+            HebrewDate = ToHebrewString(dateOnly),
             CreatedAt = DateTime.UtcNow
         };
     }
@@ -82,5 +83,14 @@ public class CalendarConversionService
         int day = count % 20;
         string monthName = HaabMonths[month];
         return $"{day} {monthName}";
+    }
+
+    private static string ToHebrewString(DateTime date)
+    {
+        var hebrew = new System.Globalization.HebrewCalendar();
+        int year = hebrew.GetYear(date);
+        int month = hebrew.GetMonth(date);
+        int day = hebrew.GetDayOfMonth(date);
+        return $"{day}/{month}/{year}";
     }
 }
