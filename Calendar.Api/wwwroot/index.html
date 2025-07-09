@@ -134,6 +134,7 @@
             const CONST_21 = 21;
             const CONST_11 = 11;
             const CONST_9 = 9;
+            const CONST_18 = 18;
 
             const dd = date.getUTCDate();
             const mm = date.getUTCMonth() + 1;
@@ -191,6 +192,9 @@
                 rule9Exp += `-${CONST_9}`;
             }
 
+            const r10 = tzolkinNumber + hebrewDay + CONST_18;
+            const rule10Exp = `${tzolkinNumber}+${hebrewDay}+${CONST_18}`;
+
             const rule1Exp = `${CONST_21}+${dd}+${mm}+${yearDigits.join('+')}+${const11Digits.join('+')}`;
             const rule2Exp = `${r1Digits.join('+')}+${const21Digits.join('+')}+${CONST_9}`;
             const rule3Exp = `${r2}+${r1Digits.join('+')}+${CONST_9}`;
@@ -209,6 +213,7 @@
                 <li>Rule 7: ${rule7Exp} = <strong>${r7}</strong></li>
                 <li>Rule 8: ${rule8Exp} = <strong>${r8}</strong></li>
                 <li>Rule 9: ${rule9Exp} = <strong>${r9}</strong></li>
+                <li>Rule 10: ${rule10Exp} = <strong>${r10}</strong></li>
 
             </ul>`;
         }
@@ -224,7 +229,7 @@
             if (select.value === 'Ozlotto') {
                 const g = new Date(currentDates.gregorianDate + 'Z');
                 ozlottoCalculations(g);
-                display.textContent = `Constants: 21, 11`;
+                display.textContent = `Constants: 21, 11, 18`;
                 return;
             }
 
