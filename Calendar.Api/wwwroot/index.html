@@ -158,12 +158,17 @@
 
             const r3 = r2 + r1Digits.reduce((a, b) => a + b, 0) + CONST_9;
 
-            const r4 = sumDigits(r1 + r2 + r3);
+            const r4Digits = [
+                ...r1.toString().split(''),
+                ...r2.toString().split(''),
+                ...r3.toString().split('')
+            ].map(Number);
+            const r4 = r4Digits.reduce((a, b) => a + b, 0);
 
             const rule1Exp = `${CONST_21}+${dd}+${mm}+${yearDigits.join('+')}+${const11Digits.join('+')}`;
             const rule2Exp = `${r1Digits.join('+')}+${const21Digits.join('+')}+${CONST_9}`;
             const rule3Exp = `${r2}+${r1Digits.join('+')}+${CONST_9}`;
-            const rule4Exp = `${r1}+${r2}+${r3}`;
+            const rule4Exp = r4Digits.join('+');
 
             calcArea.innerHTML = `<ul>
                 <li>Rule 1: ${rule1Exp} = <strong>${r1}</strong></li>
