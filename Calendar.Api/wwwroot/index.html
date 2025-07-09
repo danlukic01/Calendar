@@ -135,7 +135,7 @@
             const CONST_11 = 11;
             const CONST_9 = 9;
             const CONST_18 = 18;
-            const CONST_7 = 7;
+            const CONST_10 = 10;
 
             const dd = date.getUTCDate();
             const mm = date.getUTCMonth() + 1;
@@ -196,8 +196,8 @@
             const r10 = tzolkinNumber + hebrewDay + CONST_18;
             const rule10Exp = `${tzolkinNumber}+${hebrewDay}+${CONST_18}`;
 
-            const r11 = tzolkinNumber + julianDay + CONST_7;
-            const rule11Exp = `${tzolkinNumber}+${julianDay}+${CONST_7}`;
+            const r11 = tzolkinNumber + julianDay + CONST_10;
+            const rule11Exp = `${tzolkinNumber}+${julianDay}+${CONST_10}`;
 
             const rule1Exp = `${CONST_21}+${dd}+${mm}+${yearDigits.join('+')}+${const11Digits.join('+')}`;
             const rule2Exp = `${r1Digits.join('+')}+${const21Digits.join('+')}+${CONST_9}`;
@@ -234,7 +234,7 @@
             if (select.value === 'Ozlotto') {
                 const g = new Date(currentDates.gregorianDate + 'Z');
                 ozlottoCalculations(g);
-                display.textContent = `Constants: 21, 11, 18`;
+                display.textContent = `Constants: 21, 11, 18, 10`;
                 return;
             }
 
