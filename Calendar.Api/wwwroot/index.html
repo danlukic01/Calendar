@@ -188,7 +188,7 @@
             }
 
             if (select.value === 'Ozlotto') {
-                const g = new Date(currentDates.gregorianDate);
+                const g = new Date(currentDates.gregorianDate + 'Z');
                 ozlottoCalculations(g);
                 display.textContent = `Constants: 21, 11`;
                 return;
@@ -201,7 +201,7 @@
                 .reduce((a, b) => a + b, 0);
             display.textContent = `Constant: ${config.constant}`;
 
-            const g = new Date(currentDates.gregorianDate);
+            const g = new Date(currentDates.gregorianDate + 'Z');
             const gDay = g.getUTCDate();
             const gMonth = g.getUTCMonth() + 1;
             const gYear = g.getUTCFullYear();
