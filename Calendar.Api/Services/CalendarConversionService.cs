@@ -6,25 +6,26 @@ public class CalendarConversionService
 {
     public CalendarDate Convert(DateTime gregorian)
     {
+        var dateOnly = gregorian.Date;
         return new CalendarDate
         {
-            GregorianDate = gregorian,
-            JulianDate = ToJulianString(gregorian),
-            MayanLongCount = ToMayanLongCount(gregorian),
-            Tzolkin = ToTzolkin(gregorian),
-            Haab = ToHaab(gregorian),
+            GregorianDate = dateOnly,
+            JulianDate = ToJulianString(dateOnly),
+            MayanLongCount = ToMayanLongCount(dateOnly),
+            Tzolkin = ToTzolkin(dateOnly),
+            Haab = ToHaab(dateOnly),
             CreatedAt = DateTime.UtcNow
         };
     }
 
     private static string ToJulianString(DateTime date)
     {
-        // Simple Julian Day Number calculation
-        int a = (14 - date.Month) / 12;
-        int y = date.Year + 4800 - a;
-        int m = date.Month + 12 * a - 3;
-        int jdn = date.Day + (153 * m + 2) / 5 + 365 * y + y / 4 - y / 100 + y / 400 - 32045;
-        return jdn.ToString();
+        // Convert to the Julian calendar date string (day/month/year)
+        var julian = new System.Globalization.JulianCalendar();
+        int year = julian.GetYear(date);
+        int month = julian.GetMonth(date);
+        int day = julian.GetDayOfMonth(date);
+        return $"{day}/{month}/{year}";
     }
 
     private static int JulianDayNumber(DateTime date)
