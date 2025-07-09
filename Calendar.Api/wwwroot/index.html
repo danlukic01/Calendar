@@ -171,6 +171,16 @@
             const tzolkinNumber = parseInt(currentDates.tzolkin.split(' ')[0], 10);
             const r7 = (julianDay + 1) + tzolkinNumber + dd;
 
+            let r8;
+            let rule8Exp;
+            if (tzolkinNumber < 10 && dd < 10) {
+                r8 = parseInt(`${tzolkinNumber}${dd}`, 10) + CONST_9;
+                rule8Exp = `${tzolkinNumber}${dd}+${CONST_9}`;
+            } else {
+                r8 = tzolkinNumber + dd + CONST_9;
+                rule8Exp = `${tzolkinNumber}+${dd}+${CONST_9}`;
+            }
+
             const rule1Exp = `${CONST_21}+${dd}+${mm}+${yearDigits.join('+')}+${const11Digits.join('+')}`;
             const rule2Exp = `${r1Digits.join('+')}+${const21Digits.join('+')}+${CONST_9}`;
             const rule3Exp = `${r2}+${r1Digits.join('+')}+${CONST_9}`;
@@ -187,6 +197,7 @@
                 <li>Rule 5: ${rule5Exp} = <strong>${r5}</strong></li>
                 <li>Rule 6: ${rule6Exp} = <strong>${r6}</strong></li>
                 <li>Rule 7: ${rule7Exp} = <strong>${r7}</strong></li>
+                <li>Rule 8: ${rule8Exp} = <strong>${r8}</strong></li>
 
             </ul>`;
         }
