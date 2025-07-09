@@ -194,16 +194,93 @@
                 rule9Exp += `-${CONST_9}`;
             }
 
-            const r10 = tzolkinNumber + hebrewDay + CONST_18;
-            const rule10Exp = `${tzolkinNumber}+${hebrewDay}+${CONST_18}`;
-
-            const r11Calc = tzolkinNumber + julianDay + CONST_7 + CONST_10;
-            let r11 = r11Calc;
-            let rule11Exp = `${tzolkinNumber}+${julianDay}+${CONST_7}+${CONST_10}`;
-            if (r11Calc > 47) {
-                r11 = r11Calc - CONST_9;
-                rule11Exp += `-${CONST_9}`;
+            const r10Calc = tzolkinNumber + julianDay + CONST_7 + CONST_10;
+            let r10 = r10Calc;
+            let rule10Exp = `${tzolkinNumber}+${julianDay}+${CONST_7}+${CONST_10}`;
+            if (r10Calc > 47) {
+                r10 = r10Calc - CONST_9;
+                rule10Exp += `-${CONST_9}`;
             }
+
+            const gDay = dd;
+            const jDay = julianDay;
+            const hDay = hebrewDay;
+            const tDay = tzolkinNumber;
+
+            const additionalFormulas = [
+                ['(Julian-Gregorian)-Hebrew', '(jDay - gDay) - hDay'],
+                ['(Julian-Hebrew)-Gregorian', '(jDay - hDay) - gDay'],
+                ['Julian-(Hebrew+Gregorian)', 'jDay - (hDay + gDay)'],
+                ['Julian-(Gregorian+Hebrew)', 'jDay - (gDay + hDay)'],
+                ['Tzolkin + Gregorian', 'tDay + gDay'],
+                ['Gregorian + Tzolkin', 'gDay + tDay'],
+                ['Julian+(Gregorian-Tzolkin)', 'jDay + (gDay - tDay)'],
+                ['Tzolkin-(Hebrew-Julian)', 'tDay - (hDay - jDay)'],
+                ['(Tzolkin+Julian)-Hebrew', '(tDay + jDay) - hDay'],
+                ['(Julian+Gregorian)-Tzolkin', '(jDay + gDay) - tDay'],
+                ['Gregorian+(Julian-Tzolkin)', 'gDay + (jDay - tDay)'],
+                ['(Julian-Tzolkin)+Gregorian', '(jDay - tDay) + gDay'],
+                ['Julian+(Tzolkin-Hebrew)', 'jDay + (tDay - hDay)'],
+                ['(Tzolkin-Hebrew)+Julian', '(tDay - hDay) + jDay'],
+                ['(Julian-Hebrew)+Tzolkin', '(jDay - hDay) + tDay'],
+                ['(Gregorian-Tzolkin)+Julian', '(gDay - tDay) + jDay'],
+                ['Gregorian-(Tzolkin-Julian)', 'gDay - (tDay - jDay)'],
+                ['(Gregorian+Julian)-Tzolkin', '(gDay + jDay) - tDay'],
+                ['(Julian+Tzolkin)-Hebrew', '(jDay + tDay) - hDay'],
+                ['Julian-(Tzolkin-Gregorian)', 'jDay - (tDay - gDay)'],
+                ['Julian-(Hebrew-Tzolkin)', 'jDay - (hDay - tDay)'],
+                ['Tzolkin+(Julian-Hebrew)', 'tDay + (jDay - hDay)'],
+                ['(Julian-Tzolkin)+Hebrew', '(jDay - tDay) + hDay'],
+                ['Hebrew+(Julian-Tzolkin)', 'hDay + (jDay - tDay)'],
+                ['Julian-(Tzolkin-Hebrew)', 'jDay - (tDay - hDay)'],
+                ['(Julian+Hebrew)-Tzolkin', '(jDay + hDay) - tDay'],
+                ['Julian-(Gregorian-Tzolkin)', 'jDay - (gDay - tDay)'],
+                ['(Tzolkin+Julian)-Gregorian', '(tDay + jDay) - gDay'],
+                ['(Hebrew+Julian)-Tzolkin', '(hDay + jDay) - tDay'],
+                ['(Tzolkin-Gregorian)+Julian', '(tDay - gDay) + jDay'],
+                ['Tzolkin-(Gregorian-Julian)', 'tDay - (gDay - jDay)'],
+                ['Tzolkin+(Julian-Gregorian)', 'tDay + (jDay - gDay)'],
+                ['(Hebrew-Tzolkin)+Julian', '(hDay - tDay) + jDay'],
+                ['(Julian+Tzolkin)-Gregorian', '(jDay + tDay) - gDay'],
+                ['Hebrew-(Tzolkin-Julian)', 'hDay - (tDay - jDay)'],
+                ['(Julian-Gregorian)+Tzolkin', '(jDay - gDay) + tDay'],
+                ['Julian+(Hebrew-Tzolkin)', 'jDay + (hDay - tDay)'],
+                ['Julian+(Tzolkin-Gregorian)', 'jDay + (tDay - gDay)'],
+                ['(Tzolkin+Julian)+Gregorian', '(tDay + jDay) + gDay'],
+                ['Gregorian+(Julian+Tzolkin)', 'gDay + (jDay + tDay)'],
+                ['Julian+(Tzolkin+Gregorian)', 'jDay + (tDay + gDay)'],
+                ['Julian+(Gregorian+Tzolkin)', 'jDay + (gDay + tDay)'],
+                ['(Julian+Gregorian)+Tzolkin', '(jDay + gDay) + tDay'],
+                ['Tzolkin+(Gregorian+Julian)', 'tDay + (gDay + jDay)'],
+                ['Gregorian+(Tzolkin+Julian)', 'gDay + (tDay + jDay)'],
+                ['(Julian+Tzolkin)+Gregorian', '(jDay + tDay) + gDay'],
+                ['Tzolkin+(Julian+Gregorian)', 'tDay + (jDay + gDay)'],
+                ['(Tzolkin+Gregorian)+Julian', '(tDay + gDay) + jDay'],
+                ['(Gregorian+Julian)+Tzolkin', '(gDay + jDay) + tDay'],
+                ['(Gregorian+Tzolkin)+Julian', '(gDay + tDay) + jDay'],
+                ['Julian+(Hebrew+Tzolkin)', 'jDay + (hDay + tDay)'],
+                ['(Julian+Tzolkin)+Hebrew', '(jDay + tDay) + hDay'],
+                ['(Julian+Hebrew)+Tzolkin', '(jDay + hDay) + tDay'],
+                ['(Hebrew+Tzolkin)+Julian', '(hDay + tDay) + jDay'],
+                ['Tzolkin+(Hebrew+Julian)', 'tDay + (hDay + jDay)'],
+                ['(Tzolkin+Hebrew)+Julian', '(tDay + hDay) + jDay'],
+                ['Hebrew+(Tzolkin+Julian)', 'hDay + (tDay + jDay)'],
+                ['Julian+(Tzolkin+Hebrew)', 'jDay + (tDay + hDay)'],
+                ['(Hebrew+Julian)+Tzolkin', '(hDay + jDay) + tDay'],
+                ['(Tzolkin+Julian)+Hebrew', '(tDay + jDay) + hDay'],
+                ['Tzolkin+(Julian+Hebrew)', 'tDay + (jDay + hDay)'],
+                ['Hebrew+(Julian+Tzolkin)', 'hDay + (jDay + tDay)'],
+            ];
+
+            const additionalResults = additionalFormulas.map(([name, formula]) => {
+                const value = eval(formula);
+                const exp = formula
+                    .replace(/jDay/g, jDay)
+                    .replace(/gDay/g, gDay)
+                    .replace(/hDay/g, hDay)
+                    .replace(/tDay/g, tDay);
+                return { name, value, exp };
+            });
 
             const rule1Exp = `${CONST_21}+${dd}+${mm}+${yearDigits.join('+')}+${const11Digits.join('+')}`;
             const rule2Exp = `${r1Digits.join('+')}+${const21Digits.join('+')}+${CONST_9}`;
@@ -213,20 +290,22 @@
             const rule6Exp = `${CONST_21}-(${julianDay}+1)`;
             const rule7Exp = `(${julianDay}+1)+${tzolkinNumber}+${dd}`;
 
-            calcArea.innerHTML = `<ul>
-                <li>Rule 1: ${rule1Exp} = <strong>${r1}</strong></li>
-                <li>Rule 2: ${rule2Exp} = <strong>${r2}</strong></li>
-                <li>Rule 3: ${rule3Exp} = <strong>${r3}</strong></li>
-                <li>Rule 4: sumDigits(${rule4Exp}) = <strong>${r4}</strong></li>
-                <li>Rule 5: ${rule5Exp} = <strong>${r5}</strong></li>
-                <li>Rule 6: ${rule6Exp} = <strong>${r6}</strong></li>
-                <li>Rule 7: ${rule7Exp} = <strong>${r7}</strong></li>
-                <li>Rule 8: ${rule8Exp} = <strong>${r8}</strong></li>
-                <li>Rule 9: ${rule9Exp} = <strong>${r9}</strong></li>
-                <li>Rule 10: ${rule10Exp} = <strong>${r10}</strong></li>
-                <li>Rule 11: ${rule11Exp} = <strong>${r11}</strong></li>
-
-            </ul>`;
+            let output = `<ul>`;
+            output += `<li>Rule 1: ${rule1Exp} = <strong>${r1}</strong></li>`;
+            output += `<li>Rule 2: ${rule2Exp} = <strong>${r2}</strong></li>`;
+            output += `<li>Rule 3: ${rule3Exp} = <strong>${r3}</strong></li>`;
+            output += `<li>Rule 4: sumDigits(${rule4Exp}) = <strong>${r4}</strong></li>`;
+            output += `<li>Rule 5: ${rule5Exp} = <strong>${r5}</strong></li>`;
+            output += `<li>Rule 6: ${rule6Exp} = <strong>${r6}</strong></li>`;
+            output += `<li>Rule 7: ${rule7Exp} = <strong>${r7}</strong></li>`;
+            output += `<li>Rule 8: ${rule8Exp} = <strong>${r8}</strong></li>`;
+            output += `<li>Rule 9: ${rule9Exp} = <strong>${r9}</strong></li>`;
+            output += `<li>Rule 10: ${rule10Exp} = <strong>${r10}</strong></li>`;
+            additionalResults.forEach((res, idx) => {
+                output += `<li>Rule ${idx + 11}: ${res.exp} = <strong>${res.value}</strong></li>`;
+            });
+            output += `</ul>`;
+            calcArea.innerHTML = output;
         }
 
         function updateCalculations() {
