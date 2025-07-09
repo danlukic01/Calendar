@@ -182,6 +182,15 @@
                 rule8Exp = `${tzolkinNumber}+${dd}+${CONST_9}`;
             }
 
+            const hebrewDay = parseInt(currentDates.hebrewDate.split('/')[0], 10);
+            const r9Calc = (julianDay + 1) + hebrewDay + tzolkinNumber + dd;
+            let r9 = r9Calc;
+            let rule9Exp = `(${julianDay}+1)+${hebrewDay}+${tzolkinNumber}+${dd}`;
+            if (r9Calc > 47) {
+                r9 = r9Calc - CONST_9;
+                rule9Exp += `-${CONST_9}`;
+            }
+
             const rule1Exp = `${CONST_21}+${dd}+${mm}+${yearDigits.join('+')}+${const11Digits.join('+')}`;
             const rule2Exp = `${r1Digits.join('+')}+${const21Digits.join('+')}+${CONST_9}`;
             const rule3Exp = `${r2}+${r1Digits.join('+')}+${CONST_9}`;
@@ -199,6 +208,7 @@
                 <li>Rule 6: ${rule6Exp} = <strong>${r6}</strong></li>
                 <li>Rule 7: ${rule7Exp} = <strong>${r7}</strong></li>
                 <li>Rule 8: ${rule8Exp} = <strong>${r8}</strong></li>
+                <li>Rule 9: ${rule9Exp} = <strong>${r9}</strong></li>
 
             </ul>`;
         }
