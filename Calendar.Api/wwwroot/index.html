@@ -185,7 +185,10 @@
                 rule8Exp = `${tzolkinNumber}+${dd}+${CONST_9}`;
             }
 
-            const hebrewDay = parseInt(currentDates.hebrewDate.split('/')[0], 10);
+            const hebrewParts = currentDates.hebrewDate.split('/');
+            const hebrewDay = parseInt(hebrewParts[0], 10);
+            const hebrewMonth = parseInt(hebrewParts[1], 10);
+            const hebrewYearDigits = hebrewParts[2].split('').map(Number);
             const r9Calc = (julianDay + 1) + hebrewDay + tzolkinNumber + dd;
             let r9 = r9Calc;
             let rule9Exp = `(${julianDay}+1)+${hebrewDay}+${tzolkinNumber}+${dd}`;
@@ -201,6 +204,9 @@
                 r10 = r10Calc - CONST_9;
                 rule10Exp += `-${CONST_9}`;
             }
+
+            const r11 = hebrewDay + hebrewMonth + hebrewYearDigits.reduce((a, b) => a + b, 0);
+            const rule11Exp = `${hebrewDay}+${hebrewMonth}+${hebrewYearDigits.join('+')}`;
 
             const gDay = dd;
             const jDay = julianDay;
@@ -301,8 +307,9 @@
             output += `<li>Rule 8: ${rule8Exp} = <strong>${r8}</strong></li>`;
             output += `<li>Rule 9: ${rule9Exp} = <strong>${r9}</strong></li>`;
             output += `<li>Rule 10: ${rule10Exp} = <strong>${r10}</strong></li>`;
+            output += `<li>Rule 11: ${rule11Exp} = <strong>${r11}</strong></li>`;
             additionalResults.forEach((res, idx) => {
-                output += `<li>Rule ${idx + 11}: ${res.exp} = <strong>${res.value}</strong></li>`;
+                output += `<li>Rule ${idx + 12}: ${res.exp} = <strong>${res.value}</strong></li>`;
             });
             output += `</ul>`;
             calcArea.innerHTML = output;
