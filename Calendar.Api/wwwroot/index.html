@@ -136,6 +136,7 @@
             const CONST_9 = 9;
             const CONST_18 = 18;
             const CONST_10 = 10;
+            const CONST_7 = 7;
 
             const dd = date.getUTCDate();
             const mm = date.getUTCMonth() + 1;
@@ -196,8 +197,13 @@
             const r10 = tzolkinNumber + hebrewDay + CONST_18;
             const rule10Exp = `${tzolkinNumber}+${hebrewDay}+${CONST_18}`;
 
-            const r11 = tzolkinNumber + julianDay + CONST_10;
-            const rule11Exp = `${tzolkinNumber}+${julianDay}+${CONST_10}`;
+            const r11Calc = tzolkinNumber + julianDay + CONST_7 + CONST_10;
+            let r11 = r11Calc;
+            let rule11Exp = `${tzolkinNumber}+${julianDay}+${CONST_7}+${CONST_10}`;
+            if (r11Calc > 47) {
+                r11 = r11Calc - CONST_9;
+                rule11Exp += `-${CONST_9}`;
+            }
 
             const rule1Exp = `${CONST_21}+${dd}+${mm}+${yearDigits.join('+')}+${const11Digits.join('+')}`;
             const rule2Exp = `${r1Digits.join('+')}+${const21Digits.join('+')}+${CONST_9}`;
