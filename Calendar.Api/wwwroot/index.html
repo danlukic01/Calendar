@@ -75,6 +75,7 @@
         <li>Mayan Long Count: <span id="mayan-date"></span></li>
         <li>Tzolkin: <span id="tzolkin-date"></span></li>
         <li>Haab: <span id="haab-date"></span></li>
+        <li>Hebrew: <span id="hebrew-date"></span></li>
     </ul>
 
     <script>
@@ -277,6 +278,7 @@
         const mayanSpan = document.getElementById('mayan-date');
         const tzolkinSpan = document.getElementById('tzolkin-date');
         const haabSpan = document.getElementById('haab-date');
+        const hebrewSpan = document.getElementById('hebrew-date');
 
         function loadDate(dateString) {
             fetch(`/api/date/convert?date=${dateString}`)
@@ -289,6 +291,7 @@
                     mayanSpan.textContent = data.mayanLongCount;
                     tzolkinSpan.textContent = data.tzolkin;
                     haabSpan.textContent = data.haab;
+                    hebrewSpan.textContent = data.hebrewDate;
                     currentDates = data;
                     updateCalculations();
                 });

@@ -10,4 +10,5 @@ public class IntervalCalculationResult
     public string MayanLongCount { get; set; } = string.Empty;
     public string Tzolkin { get; set; } = string.Empty;
     public string Haab { get; set; } = string.Empty;
+    public string HebrewDate { get; set; } = string.Empty;
 }
