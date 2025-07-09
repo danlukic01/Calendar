@@ -12,5 +12,6 @@ namespace Calendar.Api.Data
         public DbSet<CalendarDate> CalendarDates { get; set; }
         public DbSet<IntervalCalculation> IntervalCalculations { get; set; }
         public DbSet<IntervalCalculationResult> IntervalCalculationResults { get; set; }
+        public DbSet<LottoEntry> LottoEntries { get; set; }
     }
 }
