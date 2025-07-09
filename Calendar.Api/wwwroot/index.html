@@ -335,7 +335,7 @@
                 return;
             }
 
-            if (select.value === 'Ozlotto') {
+            if (['Ozlotto', 'Powerball', 'Tattslotto'].includes(select.value)) {
                 const g = new Date(currentDates.gregorianDate + 'Z');
                 ozlottoCalculations(g);
                 display.textContent = `Constants: 21, 11, 18, 10`;
