@@ -129,19 +129,48 @@
         }
 
         function ozlottoCalculations(date) {
-            const dd = date.getUTCDate().toString().padStart(2, '0');
-            const mm = (date.getUTCMonth() + 1).toString().padStart(2, '0');
-            const yyyy = date.getUTCFullYear().toString();
-            const r1 = sumDigits('21' + dd + mm + yyyy);
-            const r2tmp = sumDigits(r1.toString() + '21');
-            const r2 = sumDigits(r2tmp + 9);
-            const r3 = sumDigits(r2 + r1 + 9);
+
+            const CONST_21 = 21;
+            const CONST_11 = 11;
+            const CONST_9 = 9;
+
+            const dd = date.getUTCDate();
+            const mm = date.getUTCMonth() + 1;
+            const yyyy = date.getUTCFullYear();
+
+            const yearDigits = yyyy.toString().split('').map(Number);
+            const const11Digits = CONST_11.toString().split('').map(Number);
+
+            const r1 =
+                CONST_21 +
+                dd +
+                mm +
+                yearDigits.reduce((a, b) => a + b, 0) +
+                const11Digits.reduce((a, b) => a + b, 0);
+
+            const r1Digits = r1.toString().split('').map(Number);
+            const const21Digits = CONST_21.toString().split('').map(Number);
+
+            const r2 =
+                r1Digits.reduce((a, b) => a + b, 0) +
+                const21Digits.reduce((a, b) => a + b, 0) +
+                CONST_9;
+
+            const r3 = r2 + r1Digits.reduce((a, b) => a + b, 0) + CONST_9;
+
             const r4 = sumDigits(r1 + r2 + r3);
+
+            const rule1Exp = `${CONST_21}+${dd}+${mm}+${yearDigits.join('+')}+${const11Digits.join('+')}`;
+            const rule2Exp = `${r1Digits.join('+')}+${const21Digits.join('+')}+${CONST_9}`;
+            const rule3Exp = `${r2}+${r1Digits.join('+')}+${CONST_9}`;
+            const rule4Exp = `${r1}+${r2}+${r3}`;
+
             calcArea.innerHTML = `<ul>
-                <li>Rule 1: ${r1}</li>
-                <li>Rule 2: ${r2}</li>
-                <li>Rule 3: ${r3}</li>
-                <li>Rule 4: ${r4}</li>
+                <li>Rule 1: ${rule1Exp} = <strong>${r1}</strong></li>
+                <li>Rule 2: ${rule2Exp} = <strong>${r2}</strong></li>
+                <li>Rule 3: ${rule3Exp} = <strong>${r3}</strong></li>
+                <li>Rule 4: sumDigits(${rule4Exp}) = <strong>${r4}</strong></li>
+
             </ul>`;
         }
 
