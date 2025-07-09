@@ -13,7 +13,6 @@ public class CalendarConversionService
             JulianDate = ToJulianString(dateOnly),
             MayanLongCount = ToMayanLongCount(dateOnly),
             Tzolkin = ToTzolkin(dateOnly),
-            TzolkinNumber = ToTzolkinNumber(dateOnly),
             Haab = ToHaab(dateOnly),
             HebrewDate = ToHebrewString(dateOnly),
             CreatedAt = DateTime.UtcNow
@@ -66,13 +65,6 @@ public class CalendarConversionService
         int nameIndex = (days + 19) % 20;
         string name = TzolkinNames[nameIndex];
         return $"{number} {name}";
-    }
-
-    private static int ToTzolkinNumber(DateTime date)
-    {
-        int jdn = JulianDayNumber(date);
-        int days = jdn - 584283;
-        return (days % 260 + 260) % 260 + 1;
     }
 
     private static readonly string[] HaabMonths = new[]
