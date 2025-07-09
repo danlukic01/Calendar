@@ -7,6 +7,7 @@ public class CalendarDate
     public string JulianDate { get; set; } = string.Empty;
     public string MayanLongCount { get; set; } = string.Empty;
     public string Tzolkin { get; set; } = string.Empty;
+    public int TzolkinNumber { get; set; }
     public string Haab { get; set; } = string.Empty;
     public string HebrewDate { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
