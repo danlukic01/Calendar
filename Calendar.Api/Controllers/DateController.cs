@@ -22,4 +22,12 @@ public class DateController : ControllerBase
         var conv = _converter.Convert(DateTime.UtcNow);
         return conv;
     }
+
+    // GET api/date/convert?date=yyyy-MM-dd
+    [HttpGet("convert")]
+    public ActionResult<CalendarDate> ConvertDate([FromQuery] DateTime date)
+    {
+        var conv = _converter.Convert(date);
+        return conv;
+    }
 }

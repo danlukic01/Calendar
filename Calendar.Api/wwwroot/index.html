@@ -64,10 +64,11 @@
         <option value="Powerball">Powerball</option>
         <option value="Tattslotto">Tattslotto</option>
     </select>
+    <input type="date" id="date-picker" style="width:100%;padding:8px;margin-bottom:10px;">
     <p id="constant-display"></p>
     <div id="calculation-area"></div>
 
-    <h2>Current Date</h2>
+    <h2>Selected Date</h2>
     <ul id="date-info">
         <li>Gregorian: <span id="gregorian-date"></span></li>
         <li>Julian: <span id="julian-date"></span></li>
@@ -78,14 +79,15 @@
 
     <script>
         const lotteryConstants = {
-            Ozlotto: 12395830,
-            Powerball: 104116830,
-            Tattslotto: 162109830
+            Ozlotto: { constants: [21, 11] },
+            Powerball: { constant: 104116830 },
+            Tattslotto: { constant: 162109830 }
         };
 
         const select = document.getElementById('lotto-select');
         const display = document.getElementById('constant-display');
         const calcArea = document.getElementById('calculation-area');
+        const datePicker = document.getElementById('date-picker');
 
         let currentDates = null;
 
@@ -122,19 +124,75 @@
             return { day, month, year: 0 };
         }
 
+        function sumDigits(n) {
+            return n.toString().split('').map(Number).reduce((a, b) => a + b, 0);
+        }
+
+        function ozlottoCalculations(date) {
+            const CONST_21 = 21;
+            const CONST_11 = 11;
+            const CONST_9 = 9;
+
+            const dd = date.getUTCDate();
+            const mm = date.getUTCMonth() + 1;
+            const yyyy = date.getUTCFullYear();
+
+            const yearDigits = yyyy.toString().split('').map(Number);
+            const const11Digits = CONST_11.toString().split('').map(Number);
+
+            const r1 =
+                CONST_21 +
+                dd +
+                mm +
+                yearDigits.reduce((a, b) => a + b, 0) +
+                const11Digits.reduce((a, b) => a + b, 0);
+
+            const r1Digits = r1.toString().split('').map(Number);
+            const const21Digits = CONST_21.toString().split('').map(Number);
+
+            const r2 =
+                r1Digits.reduce((a, b) => a + b, 0) +
+                const21Digits.reduce((a, b) => a + b, 0) +
+                CONST_9;
+
+            const r3 = r2 + r1Digits.reduce((a, b) => a + b, 0) + CONST_9;
+
+            const r4 = sumDigits(r1 + r2 + r3);
+
+            const rule1Exp = `${CONST_21}+${dd}+${mm}+${yearDigits.join('+')}+${const11Digits.join('+')}`;
+            const rule2Exp = `${r1Digits.join('+')}+${const21Digits.join('+')}+${CONST_9}`;
+            const rule3Exp = `${r2}+${r1Digits.join('+')}+${CONST_9}`;
+            const rule4Exp = `${r1}+${r2}+${r3}`;
+
+            calcArea.innerHTML = `<ul>
+                <li>Rule 1: ${rule1Exp} = <strong>${r1}</strong></li>
+                <li>Rule 2: ${rule2Exp} = <strong>${r2}</strong></li>
+                <li>Rule 3: ${rule3Exp} = <strong>${r3}</strong></li>
+                <li>Rule 4: sumDigits(${rule4Exp}) = <strong>${r4}</strong></li>
+            </ul>`;
+        }
+
         function updateCalculations() {
 
-            const constant = lotteryConstants[select.value];
-            if (!constant || !currentDates) {
+            const config = lotteryConstants[select.value];
+            if (!config || !currentDates) {
                 calcArea.innerHTML = '';
                 return;
             }
 
-            const digitsSum = constant
+            if (select.value === 'Ozlotto') {
+                const g = new Date(currentDates.gregorianDate);
+                ozlottoCalculations(g);
+                display.textContent = `Constants: 21, 11`;
+                return;
+            }
+
+            const digitsSum = config.constant
                 .toString()
                 .split('')
                 .map(Number)
                 .reduce((a, b) => a + b, 0);
+            display.textContent = `Constant: ${config.constant}`;
 
             const g = new Date(currentDates.gregorianDate);
             const gDay = g.getUTCDate();
@@ -177,9 +235,11 @@
         }
 
         select.addEventListener('change', () => {
-            const value = lotteryConstants[select.value];
-            display.textContent = value ? `Constant: ${value}` : '';
             updateCalculations();
+        });
+
+        datePicker.addEventListener('change', () => {
+            loadDate(datePicker.value);
         });
 
         const gregorianSpan = document.getElementById('gregorian-date');
@@ -188,17 +248,23 @@
         const tzolkinSpan = document.getElementById('tzolkin-date');
         const haabSpan = document.getElementById('haab-date');
 
-        fetch('/api/date/current')
-            .then(res => res.json())
-            .then(data => {
-                gregorianSpan.textContent = data.gregorianDate;
-                julianSpan.textContent = data.julianDate;
-                mayanSpan.textContent = data.mayanLongCount;
-                tzolkinSpan.textContent = data.tzolkin;
-                haabSpan.textContent = data.haab;
-                currentDates = data;
-                updateCalculations();
-            });
+        function loadDate(dateString) {
+            fetch(`/api/date/convert?date=${dateString}`)
+                .then(res => res.json())
+                .then(data => {
+                    gregorianSpan.textContent = data.gregorianDate;
+                    julianSpan.textContent = data.julianDate;
+                    mayanSpan.textContent = data.mayanLongCount;
+                    tzolkinSpan.textContent = data.tzolkin;
+                    haabSpan.textContent = data.haab;
+                    currentDates = data;
+                    updateCalculations();
+                });
+        }
+
+        const today = new Date().toISOString().split('T')[0];
+        datePicker.value = today;
+        loadDate(today);
     </script>
     </div>
 </body>
