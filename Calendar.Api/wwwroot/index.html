@@ -74,6 +74,7 @@
         <li>Julian: <span id="julian-date"></span></li>
         <li>Mayan Long Count: <span id="mayan-date"></span></li>
         <li>Tzolkin: <span id="tzolkin-date"></span></li>
+        <li>Tzolkin Number: <span id="tzolkin-number"></span></li>
         <li>Haab: <span id="haab-date"></span></li>
         <li>Hebrew: <span id="hebrew-date"></span></li>
     </ul>
@@ -172,7 +173,7 @@
             const julianDay = parseInt(currentDates.julianDate.split('/')[0], 10);
             const r5 = CONST_21 + julianDay + 1;
             const r6 = CONST_21 - (julianDay + 1);
-            const tzolkinNumber = parseInt(currentDates.tzolkin.split(' ')[0], 10);
+            const tzolkinNumber = currentDates.tzolkinNumber;
             const r7 = (julianDay + 1) + tzolkinNumber + dd;
 
             let r8;
@@ -382,6 +383,7 @@
         const julianSpan = document.getElementById('julian-date');
         const mayanSpan = document.getElementById('mayan-date');
         const tzolkinSpan = document.getElementById('tzolkin-date');
+        const tzolkinNumberSpan = document.getElementById('tzolkin-number');
         const haabSpan = document.getElementById('haab-date');
         const hebrewSpan = document.getElementById('hebrew-date');
 
@@ -395,6 +397,7 @@
                     julianSpan.textContent = data.julianDate;
                     mayanSpan.textContent = data.mayanLongCount;
                     tzolkinSpan.textContent = data.tzolkin;
+                    tzolkinNumberSpan.textContent = data.tzolkinNumber;
                     haabSpan.textContent = data.haab;
                     hebrewSpan.textContent = data.hebrewDate;
                     currentDates = data;
