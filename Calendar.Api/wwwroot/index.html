@@ -212,7 +212,7 @@
             const jDayDigits = julianParts[0].split('').map(Number);
             const jMonthDigits = julianParts[1].split('').map(Number);
             const jYearDigits = julianParts[2].split('').map(Number);
-            const r12 = [...jDayDigits, ...jMonthDigits, ...jYearDigits].reduce((a, b) => a + b, 0);
+            const r12 = [...jDayDigits, ...jMonthDigits, ...jYearDigits].reduce((a, b) => a + b, 0) + 1;
             const rule12Exp = `${jDayDigits.join('+')}+${jMonthDigits.join('+')}+${jYearDigits.join('+')}+1`;
 
             const r13 = r12 + CONST_18;
