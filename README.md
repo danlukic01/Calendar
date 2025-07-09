@@ -35,3 +35,13 @@ Returns the current date expressed in Gregorian, Julian, Hebrew, Mayan (Long Cou
 Tzolkin and Haab forms.
 
 Migrations are not included because `dotnet ef` tools were unavailable in this environment.
+
+### Entering lotto numbers
+Navigate to `/lotto-entry.html` after the API starts to record Powerball numbers.
+Entries are saved via the `/api/lottoentries` endpoint. If running with a fresh
+database, create a migration for the `LottoEntries` table and apply it:
+
+```bash
+dotnet ef migrations add AddLottoEntries -p Calendar.Api -s Calendar.Api
+dotnet ef database update -p Calendar.Api -s Calendar.Api
+```
