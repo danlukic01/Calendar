@@ -45,3 +45,7 @@ database, create a migration for the `LottoEntries` table and apply it:
 dotnet ef migrations add AddLottoEntries -p Calendar.Api -s Calendar.Api
 dotnet ef database update -p Calendar.Api -s Calendar.Api
 ```
+
+Viewing predictions on `/index.html` now records every calculated lotto number.
+Both matched and unmatched numbers are stored via the `/api/lottomatches`
+endpoint and can be queried by lotto name, draw date and match status.
