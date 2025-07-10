@@ -8,7 +8,7 @@ Fourmilab.
 
 ## Prerequisites
 - .NET SDK 7.0 or later
-- SQLite (default connection string is `Data Source=calendar.db`)
+ - SQL Server (default connection string uses a standard `Server=...;Database=...` format)
 
 ## Build and run
 ```
