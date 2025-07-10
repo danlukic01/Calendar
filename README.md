@@ -34,7 +34,14 @@ curl http://localhost:5000/api/date/current
 Returns the current date expressed in Gregorian, Julian, Hebrew, Mayan (Long Count),
 Tzolkin and Haab forms.
 
-Migrations are not included because `dotnet ef` tools were unavailable in this environment.
+Migrations are not included because `dotnet ef` tools were unavailable in this
+environment. When running against a new SQL Server instance, create the initial
+schema with EF Core migrations:
+
+```bash
+dotnet ef migrations add InitialCreate -p Calendar.Api -s Calendar.Api
+dotnet ef database update -p Calendar.Api -s Calendar.Api
+```
 
 ### Entering lotto numbers
 Navigate to `/lotto-entry.html` after the API starts to record Powerball numbers.
