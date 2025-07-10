@@ -1,0 +1,28 @@
+﻿<Project>
+  <ItemGroup>
+    <StaticWebAssetEndpoint Include="_content/Calendar.Api/index.avl7r44elh.html">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\index.html'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"avl7r44elh"},{"Name":"integrity","Value":"sha256-ikpP3mJmEOOLosN2tXez9/CxY7GY0Yc4VHAGyOFlVdc="},{"Name":"label","Value":"_content/Calendar.Api/index.html"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"21597"},{"Name":"Content-Type","Value":"text/html"},{"Name":"ETag","Value":"\u0022ikpP3mJmEOOLosN2tXez9/CxY7GY0Yc4VHAGyOFlVdc=\u0022"},{"Name":"Last-Modified","Value":"Thu, 10 Jul 2025 01:43:33 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/Calendar.Api/index.html">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\index.html'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-ikpP3mJmEOOLosN2tXez9/CxY7GY0Yc4VHAGyOFlVdc="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"21597"},{"Name":"Content-Type","Value":"text/html"},{"Name":"ETag","Value":"\u0022ikpP3mJmEOOLosN2tXez9/CxY7GY0Yc4VHAGyOFlVdc=\u0022"},{"Name":"Last-Modified","Value":"Thu, 10 Jul 2025 01:43:33 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/Calendar.Api/lotto-entry.html">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\lotto-entry.html'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-slTT/fpoC6JvTYbikHh1UzK50lMmcksDt29lZhtqAk4="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"4205"},{"Name":"Content-Type","Value":"text/html"},{"Name":"ETag","Value":"\u0022slTT/fpoC6JvTYbikHh1UzK50lMmcksDt29lZhtqAk4=\u0022"},{"Name":"Last-Modified","Value":"Thu, 10 Jul 2025 00:34:25 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/Calendar.Api/lotto-entry.qmow8q2x2x.html">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\lotto-entry.html'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"qmow8q2x2x"},{"Name":"integrity","Value":"sha256-slTT/fpoC6JvTYbikHh1UzK50lMmcksDt29lZhtqAk4="},{"Name":"label","Value":"_content/Calendar.Api/lotto-entry.html"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"4205"},{"Name":"Content-Type","Value":"text/html"},{"Name":"ETag","Value":"\u0022slTT/fpoC6JvTYbikHh1UzK50lMmcksDt29lZhtqAk4=\u0022"},{"Name":"Last-Modified","Value":"Thu, 10 Jul 2025 00:34:25 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+  </ItemGroup>
+</Project>

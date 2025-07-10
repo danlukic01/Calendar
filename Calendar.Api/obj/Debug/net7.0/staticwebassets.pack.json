@@ -1,0 +1,33 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Users\\dan\\source\\repos\\Calendar\\Calendar.Api\\wwwroot\\index.html",
+      "PackagePath": "staticwebassets\\index.html"
+    },
+    {
+      "Id": "C:\\Users\\dan\\source\\repos\\Calendar\\Calendar.Api\\wwwroot\\lotto-entry.html",
+      "PackagePath": "staticwebassets\\lotto-entry.html"
+    },
+    {
+      "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.Calendar.Api.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssetEndpoints.props"
+    },
+    {
+      "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.Calendar.Api.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.build.Calendar.Api.props",
+      "PackagePath": "build\\Calendar.Api.props"
+    },
+    {
+      "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.buildMultiTargeting.Calendar.Api.props",
+      "PackagePath": "buildMultiTargeting\\Calendar.Api.props"
+    },
+    {
+      "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.buildTransitive.Calendar.Api.props",
+      "PackagePath": "buildTransitive\\Calendar.Api.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

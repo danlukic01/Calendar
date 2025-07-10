@@ -1,0 +1,228 @@
+{
+  "Version": 1,
+  "Hash": "FFjdzQqyFylsIf6qRQZaNNWpLYR+J0XTqzl6L+OjnkA=",
+  "Source": "Calendar.Api",
+  "BasePath": "_content/Calendar.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "Calendar.Api\\wwwroot",
+      "Source": "Calendar.Api",
+      "ContentRoot": "C:\\Users\\dan\\source\\repos\\Calendar\\Calendar.Api\\wwwroot\\",
+      "BasePath": "_content/Calendar.Api",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "C:\\Users\\dan\\source\\repos\\Calendar\\Calendar.Api\\wwwroot\\index.html",
+      "SourceId": "Calendar.Api",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\dan\\source\\repos\\Calendar\\Calendar.Api\\wwwroot\\",
+      "BasePath": "_content/Calendar.Api",
+      "RelativePath": "index#[.{fingerprint}]?.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "avl7r44elh",
+      "Integrity": "ikpP3mJmEOOLosN2tXez9/CxY7GY0Yc4VHAGyOFlVdc=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\index.html"
+    },
+    {
+      "Identity": "C:\\Users\\dan\\source\\repos\\Calendar\\Calendar.Api\\wwwroot\\lotto-entry.html",
+      "SourceId": "Calendar.Api",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\dan\\source\\repos\\Calendar\\Calendar.Api\\wwwroot\\",
+      "BasePath": "_content/Calendar.Api",
+      "RelativePath": "lotto-entry#[.{fingerprint}]?.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "qmow8q2x2x",
+      "Integrity": "slTT/fpoC6JvTYbikHh1UzK50lMmcksDt29lZhtqAk4=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\lotto-entry.html"
+    }
+  ],
+  "Endpoints": [
+    {
+      "Route": "index.avl7r44elh.html",
+      "AssetFile": "C:\\Users\\dan\\source\\repos\\Calendar\\Calendar.Api\\wwwroot\\index.html",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "21597"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"ikpP3mJmEOOLosN2tXez9/CxY7GY0Yc4VHAGyOFlVdc=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 10 Jul 2025 01:43:33 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "avl7r44elh"
+        },
+        {
+          "Name": "label",
+          "Value": "index.html"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-ikpP3mJmEOOLosN2tXez9/CxY7GY0Yc4VHAGyOFlVdc="
+        }
+      ]
+    },
+    {
+      "Route": "index.html",
+      "AssetFile": "C:\\Users\\dan\\source\\repos\\Calendar\\Calendar.Api\\wwwroot\\index.html",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "21597"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"ikpP3mJmEOOLosN2tXez9/CxY7GY0Yc4VHAGyOFlVdc=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 10 Jul 2025 01:43:33 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-ikpP3mJmEOOLosN2tXez9/CxY7GY0Yc4VHAGyOFlVdc="
+        }
+      ]
+    },
+    {
+      "Route": "lotto-entry.html",
+      "AssetFile": "C:\\Users\\dan\\source\\repos\\Calendar\\Calendar.Api\\wwwroot\\lotto-entry.html",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "4205"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"slTT/fpoC6JvTYbikHh1UzK50lMmcksDt29lZhtqAk4=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 10 Jul 2025 00:34:25 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-slTT/fpoC6JvTYbikHh1UzK50lMmcksDt29lZhtqAk4="
+        }
+      ]
+    },
+    {
+      "Route": "lotto-entry.qmow8q2x2x.html",
+      "AssetFile": "C:\\Users\\dan\\source\\repos\\Calendar\\Calendar.Api\\wwwroot\\lotto-entry.html",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "4205"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"slTT/fpoC6JvTYbikHh1UzK50lMmcksDt29lZhtqAk4=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 10 Jul 2025 00:34:25 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "qmow8q2x2x"
+        },
+        {
+          "Name": "label",
+          "Value": "lotto-entry.html"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-slTT/fpoC6JvTYbikHh1UzK50lMmcksDt29lZhtqAk4="
+        }
+      ]
+    }
+  ]
+}
