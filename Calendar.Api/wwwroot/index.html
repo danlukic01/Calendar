@@ -365,6 +365,17 @@
                 if (matched) {
                     matches.push({ rule: r.rule, number: r.value });
                 }
+                fetch('/api/lottomatches', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        lottoName: select.value,
+                        drawDate: datePicker.value,
+                        rule: r.rule,
+                        number: r.value,
+                        matched: matched
+                    })
+                });
                 output += `<li${matched ? ' class="match"' : ''}>${r.rule}: ${r.exp} = <strong>${r.value}</strong></li>`;
             });
             output += '</ul>';
@@ -374,18 +385,6 @@
             if (matches.length > 0) {
                 const nums = matches.map(m => m.number).join(', ');
                 matchDisplay.textContent = `Matched numbers: ${nums}`;
-                matches.forEach(m => {
-                    fetch('/api/lottomatches', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            lottoName: select.value,
-                            drawDate: datePicker.value,
-                            rule: m.rule,
-                            number: m.number
-                        })
-                    });
-                });
             } else {
                 matchDisplay.textContent = '';
             }

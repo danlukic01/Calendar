@@ -9,6 +9,7 @@ namespace Calendar.Api.Models
         public DateTime DrawDate { get; set; }
         public string Rule { get; set; } = string.Empty;
         public int Number { get; set; }
+        public bool Matched { get; set; }
     }
 }
 

@@ -10,10 +10,16 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<CalendarConversionService>();
 
 builder.Services.AddDbContextFactory<AppDbContext>(
-    options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")),
+    options => options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")),
     ServiceLifetime.Scoped // recommended
 );
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.EnsureCreated();
+}
 
 app.UseSwagger();
 app.UseSwaggerUI();

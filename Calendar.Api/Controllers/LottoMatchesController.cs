@@ -33,13 +33,15 @@ namespace Calendar.Api.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<LottoMatch> List(string? lottoName, DateTime? drawDate)
+        public IEnumerable<LottoMatch> List(string? lottoName, DateTime? drawDate, bool? matched)
         {
             var query = _context.LottoMatches.AsQueryable();
             if (!string.IsNullOrEmpty(lottoName))
                 query = query.Where(m => m.LottoName == lottoName);
             if (drawDate.HasValue)
                 query = query.Where(m => m.DrawDate.Date == drawDate.Value.Date);
+            if (matched.HasValue)
+                query = query.Where(m => m.Matched == matched.Value);
             return query.ToList();
         }
     }
