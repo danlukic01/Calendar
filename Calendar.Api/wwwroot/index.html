@@ -63,6 +63,10 @@
             padding: 2px 0;
         }
 
+        li.match {
+            color: green;
+        }
+
         #calculation-area ul {
             margin-top: 10px;
         }
@@ -82,6 +86,7 @@
     </select>
     <input type="date" id="date-picker" style="width:100%;padding:8px;margin-bottom:10px;">
     <p id="constant-display"></p>
+    <div id="match-display" style="margin-bottom:10px;"></div>
     <div id="calculation-area"></div>
 
     <h2>Selected Date</h2>
@@ -107,6 +112,7 @@
         const datePicker = document.getElementById('date-picker');
 
         let currentDates = null;
+        let currentEntry = null;
 
         function jdnToJulian(jdn) {
             let c = jdn + 32082;
@@ -322,25 +328,81 @@
             const rule6Exp = `${CONST_21}-(${julianDay}+1)`;
             const rule7Exp = `(${julianDay}+1)+${tzolkinNumber}+${dd}`;
 
-            let output = `<ul>`;
-            output += `<li>Rule 1: ${rule1Exp} = <strong>${r1}</strong></li>`;
-            output += `<li>Rule 2: ${rule2Exp} = <strong>${r2}</strong></li>`;
-            output += `<li>Rule 3: ${rule3Exp} = <strong>${r3}</strong></li>`;
-            output += `<li>Rule 4: sumDigits(${rule4Exp}) = <strong>${r4}</strong></li>`;
-            output += `<li>Rule 5: ${rule5Exp} = <strong>${r5}</strong></li>`;
-            output += `<li>Rule 6: ${rule6Exp} = <strong>${r6}</strong></li>`;
-            output += `<li>Rule 7: ${rule7Exp} = <strong>${r7}</strong></li>`;
-            output += `<li>Rule 8: ${rule8Exp} = <strong>${r8}</strong></li>`;
-            output += `<li>Rule 9: ${rule9Exp} = <strong>${r9}</strong></li>`;
-            output += `<li>Rule 10: ${rule10Exp} = <strong>${r10}</strong></li>`;
-            output += `<li>Rule 11: ${rule11Exp} = <strong>${r11}</strong></li>`;
-            output += `<li>Rule 12: ${rule12Exp} = <strong>${r12}</strong></li>`;
-            output += `<li>Rule 13: ${rule13Exp} = <strong>${r13}</strong></li>`;
+            const results = [
+                { rule: 'Rule 1', value: r1, exp: rule1Exp },
+                { rule: 'Rule 2', value: r2, exp: rule2Exp },
+                { rule: 'Rule 3', value: r3, exp: rule3Exp },
+                { rule: 'Rule 4', value: r4, exp: `sumDigits(${rule4Exp})` },
+                { rule: 'Rule 5', value: r5, exp: rule5Exp },
+                { rule: 'Rule 6', value: r6, exp: rule6Exp },
+                { rule: 'Rule 7', value: r7, exp: rule7Exp },
+                { rule: 'Rule 8', value: r8, exp: rule8Exp },
+                { rule: 'Rule 9', value: r9, exp: rule9Exp },
+                { rule: 'Rule 10', value: r10, exp: rule10Exp },
+                { rule: 'Rule 11', value: r11, exp: rule11Exp },
+                { rule: 'Rule 12', value: r12, exp: rule12Exp },
+                { rule: 'Rule 13', value: r13, exp: rule13Exp },
+            ];
             additionalResults.forEach((res, idx) => {
-                output += `<li>Rule ${idx + 14}: ${res.exp} = <strong>${res.value}</strong></li>`;
+                results.push({ rule: `Rule ${idx + 14}`, value: res.value, exp: res.exp });
             });
-            output += `</ul>`;
+
+            const entryNumbers = currentEntry ? [
+                currentEntry.number1,
+                currentEntry.number2,
+                currentEntry.number3,
+                currentEntry.number4,
+                currentEntry.number5,
+                currentEntry.number6,
+                currentEntry.number7,
+                currentEntry.powerball
+            ] : [];
+
+            const matches = [];
+            let output = '<ul>';
+            results.forEach(r => {
+                const matched = entryNumbers.includes(r.value);
+                if (matched) {
+                    matches.push({ rule: r.rule, number: r.value });
+                }
+                output += `<li${matched ? ' class="match"' : ''}>${r.rule}: ${r.exp} = <strong>${r.value}</strong></li>`;
+            });
+            output += '</ul>';
             calcArea.innerHTML = output;
+
+            const matchDisplay = document.getElementById('match-display');
+            if (matches.length > 0) {
+                const nums = matches.map(m => m.number).join(', ');
+                matchDisplay.textContent = `Matched numbers: ${nums}`;
+                matches.forEach(m => {
+                    fetch('/api/lottomatches', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            lottoName: select.value,
+                            drawDate: datePicker.value,
+                            rule: m.rule,
+                            number: m.number
+                        })
+                    });
+                });
+            } else {
+                matchDisplay.textContent = '';
+            }
+        }
+
+        function fetchEntry() {
+            currentEntry = null;
+            fetch(`/api/lottoentries/byDate?lottoName=${select.value}&drawDate=${datePicker.value}`)
+                .then(res => res.ok ? res.json() : null)
+                .then(data => {
+                    currentEntry = data;
+                    updateCalculations();
+                })
+                .catch(() => {
+                    currentEntry = null;
+                    updateCalculations();
+                });
         }
 
         function updateCalculations() {
@@ -406,11 +468,12 @@
         }
 
         select.addEventListener('change', () => {
-            updateCalculations();
+            fetchEntry();
         });
 
         datePicker.addEventListener('change', () => {
             loadDate(datePicker.value);
+            fetchEntry();
         });
 
         const gregorianSpan = document.getElementById('gregorian-date');
@@ -434,6 +497,7 @@
                     hebrewSpan.textContent = data.hebrewDate;
                     currentDates = data;
                     updateCalculations();
+                    fetchEntry();
                 });
         }
 

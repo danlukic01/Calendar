@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Calendar.Api.Data;
 using Calendar.Api.Models;
 using System.Linq;
+using System;
 
 namespace Calendar.Api.Controllers
 {
@@ -41,6 +42,14 @@ namespace Calendar.Api.Controllers
             return _context.LottoEntries
                 .OrderByDescending(e => e.DrawDate)
                 .ToList();
+        }
+
+        [HttpGet("byDate")]
+        public ActionResult<LottoEntry> GetByDate(string lottoName, DateTime drawDate)
+        {
+            var entry = _context.LottoEntries.FirstOrDefault(e => e.LottoName == lottoName && e.DrawDate.Date == drawDate.Date);
+            if (entry == null) return NotFound();
+            return entry;
         }
     }
 }
