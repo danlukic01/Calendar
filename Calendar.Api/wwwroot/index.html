@@ -88,6 +88,7 @@
     <p id="constant-display"></p>
     <div id="match-display" style="margin-bottom:10px;"></div>
     <div id="calculation-area"></div>
+    <button id="match-button" style="display:none;margin-bottom:10px;">Match Numbers</button>
 
     <h2>Selected Date</h2>
     <ul id="date-info">
@@ -110,9 +111,47 @@
         const display = document.getElementById('constant-display');
         const calcArea = document.getElementById('calculation-area');
         const datePicker = document.getElementById('date-picker');
+        const matchBtn = document.getElementById('match-button');
 
         let currentDates = null;
         let currentEntry = null;
+        let currentResults = [];
+
+        function updateMatchButton() {
+            if (select.value && datePicker.value) {
+                matchBtn.style.display = 'block';
+            } else {
+                matchBtn.style.display = 'none';
+            }
+        }
+
+        function saveMatches() {
+            if (!currentResults || currentResults.length === 0) return;
+            const entryNumbers = currentEntry ? [
+                currentEntry.number1,
+                currentEntry.number2,
+                currentEntry.number3,
+                currentEntry.number4,
+                currentEntry.number5,
+                currentEntry.number6,
+                currentEntry.number7,
+                currentEntry.powerball
+            ] : [];
+            currentResults.forEach(r => {
+                const matched = entryNumbers.includes(r.value);
+                fetch('/api/lottomatches', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        lottoName: select.value,
+                        drawDate: datePicker.value,
+                        rule: r.rule,
+                        number: r.value,
+                        matched: matched
+                    })
+                });
+            });
+        }
 
         function jdnToJulian(jdn) {
             let c = jdn + 32082;
@@ -347,6 +386,8 @@
                 results.push({ rule: `Rule ${idx + 14}`, value: res.value, exp: res.exp });
             });
 
+            currentResults = results;
+
             const entryNumbers = currentEntry ? [
                 currentEntry.number1,
                 currentEntry.number2,
@@ -365,17 +406,6 @@
                 if (matched) {
                     matches.push({ rule: r.rule, number: r.value });
                 }
-                fetch('/api/lottomatches', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        lottoName: select.value,
-                        drawDate: datePicker.value,
-                        rule: r.rule,
-                        number: r.value,
-                        matched: matched
-                    })
-                });
                 output += `<li${matched ? ' class="match"' : ''}>${r.rule}: ${r.exp} = <strong>${r.value}</strong></li>`;
             });
             output += '</ul>';
@@ -397,10 +427,12 @@
                 .then(data => {
                     currentEntry = data;
                     updateCalculations();
+                    updateMatchButton();
                 })
                 .catch(() => {
                     currentEntry = null;
                     updateCalculations();
+                    updateMatchButton();
                 });
         }
 
@@ -468,11 +500,13 @@
 
         select.addEventListener('change', () => {
             fetchEntry();
+            updateMatchButton();
         });
 
         datePicker.addEventListener('change', () => {
             loadDate(datePicker.value);
             fetchEntry();
+            updateMatchButton();
         });
 
         const gregorianSpan = document.getElementById('gregorian-date');
@@ -503,6 +537,9 @@
         const today = new Date().toISOString().split('T')[0];
         datePicker.value = today;
         loadDate(today);
+        updateMatchButton();
+
+        matchBtn.addEventListener('click', saveMatches);
     </script>
     </div>
 </body>
