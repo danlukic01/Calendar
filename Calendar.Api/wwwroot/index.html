@@ -10,9 +10,21 @@
             font-family: Arial, Helvetica, sans-serif;
             background: #f5f7fa;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            align-items: center;
             padding: 40px 0;
             color: #333;
+        }
+
+        nav.main-nav {
+            margin-bottom: 20px;
+        }
+
+        nav.main-nav a {
+            margin: 0 10px;
+            color: #333;
+            text-decoration: none;
+            font-weight: bold;
         }
 
         .card {
@@ -57,6 +69,10 @@
     </style>
 </head>
 <body>
+    <nav class="main-nav">
+        <a href="index.html">Predict</a>
+        <a href="lotto-entry.html">Enter Numbers</a>
+    </nav>
     <div class="card">
     <h1>Select a lottery</h1>
     <select id="lotto-select">
