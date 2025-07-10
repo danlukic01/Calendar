@@ -17,7 +17,9 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.EnsureCreated();
+    // Apply any pending migrations. This will create the database if it does not
+    // exist and update the schema when new migrations are added.
+    db.Database.Migrate();
 }
 
 app.UseSwagger();
