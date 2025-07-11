@@ -207,10 +207,13 @@
             const const21Digits = CONST_21.toString().split('').map(Number);
             const const11Digits = CONST_11.toString().split('').map(Number);
 
+            const ddDigits = dd.toString().split('').map(Number);
+            const mmDigits = mm.toString().split('').map(Number);
+
             const r1 =
                 const21Digits.reduce((a, b) => a + b, 0) +
-                dd +
-                mm +
+                (use22 ? ddDigits.reduce((a, b) => a + b, 0) : dd) +
+                (use22 ? mmDigits.reduce((a, b) => a + b, 0) : mm) +
                 yearDigits.reduce((a, b) => a + b, 0) +
                 const11Digits.reduce((a, b) => a + b, 0);
 
@@ -221,7 +224,12 @@
                 const21Digits.reduce((a, b) => a + b, 0) +
                 CONST_9;
 
-            const r3 = r2 + r1Digits.reduce((a, b) => a + b, 0) + CONST_9;
+            const r2Digits = r2.toString().split('').map(Number);
+
+            const r3 =
+                (use22 ? r2Digits.reduce((a, b) => a + b, 0) : r2) +
+                r1Digits.reduce((a, b) => a + b, 0) +
+                CONST_9;
 
             const r4Digits = [
                 ...r1.toString().split(''),
@@ -371,9 +379,9 @@
                 additionalResults[idxGT].exp = `${gDay}+${tDay}`;
             }
 
-            const rule1Exp = `${const21Digits.join('+')}+${dd}+${mm}+${yearDigits.join('+')}+${const11Digits.join('+')}`;
+            const rule1Exp = `${const21Digits.join('+')}+${use22 ? ddDigits.join('+') : dd}+${use22 ? mmDigits.join('+') : mm}+${yearDigits.join('+')}+${const11Digits.join('+')}`;
             const rule2Exp = `${r1Digits.join('+')}+${const21Digits.join('+')}+${CONST_9}`;
-            const rule3Exp = `${r2}+${r1Digits.join('+')}+${CONST_9}`;
+            const rule3Exp = `${use22 ? r2Digits.join('+') : r2}+${r1Digits.join('+')}+${CONST_9}`;
             const rule4Exp = r4Digits.join('+');
             const rule5Exp = `${CONST_21}+(${julianDay}+1)`;
             const rule6Exp = `${CONST_21}-(${julianDay}+1)`;
