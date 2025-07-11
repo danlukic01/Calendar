@@ -419,9 +419,12 @@
                 const r76 = 22 + ddDigits.reduce((a, b) => a + b, 0);
                 const rule76Exp = `22+${ddDigits.join('+')}`;
                 results.push({ rule: 'Rule 76', value: r76, exp: rule76Exp });
+                const r77 = sumDigits(r76) + dd;
+                const r77Exp = `${r76.toString().split('').join('+')}+${dd}`;
+                results.push({ rule: 'Rule 77', value: r77, exp: r77Exp });
 
-                const r77 = hebrewDay;
-                results.push({ rule: 'Rule 77', value: r77, exp: `${hebrewDay}` });
+                const r78 = hebrewDay;
+                results.push({ rule: 'Rule 78', value: r78, exp: `${hebrewDay}` });
             }
 
             currentResults = results;
