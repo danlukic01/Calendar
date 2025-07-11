@@ -545,7 +545,8 @@
 
             const matchDisplay = document.getElementById('match-display');
             if (matches.length > 0) {
-                const nums = matches.map(m => m.number).join(', ');
+                const unique = [...new Set(matches.map(m => m.number))];
+                const nums = unique.join(', ');
                 matchDisplay.textContent = `Matched numbers: ${nums}`;
             } else {
                 matchDisplay.textContent = '';
