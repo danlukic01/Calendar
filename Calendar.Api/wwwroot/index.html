@@ -428,6 +428,10 @@
                 const r78 = 22 + haabDayDigits.reduce((a, b) => a + b, 0);
                 const rule78Exp = `22+${haabDayDigits.join('+')}`;
                 results.push({ rule: 'Rule 78', value: r78, exp: rule78Exp });
+
+                const r79 = haab.day - tzolkinNumber;
+                const rule79Exp = `${haab.day}-${tzolkinNumber}`;
+                results.push({ rule: 'Rule 79', value: r79, exp: rule79Exp });
             }
 
             currentResults = results;
