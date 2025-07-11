@@ -414,6 +414,13 @@
                         results[idx].exp += `-${CONST_18}`;
                     }
                 }
+
+                const r76 = 22 + ddDigits.reduce((a, b) => a + b, 0);
+                const rule76Exp = `22+${ddDigits.join('+')}`;
+                results.push({ rule: 'Rule 76', value: r76, exp: rule76Exp });
+
+                const r77 = hebrewDay;
+                results.push({ rule: 'Rule 77', value: r77, exp: `${hebrewDay}` });
             }
 
             currentResults = results;
