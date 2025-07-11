@@ -171,6 +171,13 @@
             "K'ayab", "Kumk'u", 'Wayeb'
         ];
 
+        const tzolkinNames = [
+            'Imix', "Ik'", "Ak'b'al", "K'an", 'Chikchan',
+            'Kimi', "Manik'", 'Lamat', 'Muluk', 'Ok',
+            'Chuwen', "Eb'", 'Ben', 'Ix', 'Men',
+            "Kib'", "Kab'an", "Etz'nab'", 'Kawak', 'Ajaw'
+        ];
+
         function parseMayan(str) {
             const parts = str.split('.').map(Number);
             return {
@@ -205,6 +212,25 @@
             const uinal = Math.floor((days % 360) / 20);
             const kin = days % 20;
             return { baktun, katun, tun, uinal, kin };
+        }
+
+        function toTzolkin(date) {
+            const jdn = gregorianToJdn(date);
+            const days = jdn - 584283;
+            const number = ((days + 3) % 13) + 1;
+            const nameIndex = (days + 19) % 20;
+            const name = tzolkinNames[nameIndex];
+            return { number, name };
+        }
+
+        function toHaab(date) {
+            const jdn = gregorianToJdn(date);
+            const days = jdn - 584283;
+            const count = (days + 348) % 365;
+            const month = Math.floor(count / 20);
+            const day = count % 20;
+            const monthName = haabMonths[month];
+            return { day, month, monthName };
         }
 
         function sumDigits(n) {
@@ -469,6 +495,26 @@
                 const r81 = r81Digits.reduce((a, b) => a + b, 0);
                 const rule81Exp = r81Digits.join('+');
                 results.push({ rule: 'Rule 81', value: r81, exp: rule81Exp });
+
+                const datePlus126 = new Date(Date.UTC(date.getUTCFullYear() + 126, date.getUTCMonth(), date.getUTCDate()));
+                const tz126 = toTzolkin(datePlus126);
+                const hb126 = toHaab(datePlus126);
+                const r82 = tz126.number + hb126.day;
+                const rule82Exp = `${tz126.number}+${hb126.day}`;
+                results.push({ rule: 'Rule 82', value: r82, exp: rule82Exp });
+
+                const dateMinus126 = new Date(Date.UTC(date.getUTCFullYear() - 126, date.getUTCMonth(), date.getUTCDate()));
+                const mlc126 = toMayanLongCount(dateMinus126);
+                const r83Digits = [
+                    mlc126.baktun,
+                    ...mlc126.katun.toString().split(''),
+                    ...mlc126.tun.toString().split(''),
+                    ...mlc126.uinal.toString().split(''),
+                    ...mlc126.kin.toString().split('')
+                ].map(Number);
+                const r83 = r83Digits.reduce((a, b) => a + b, 0);
+                const rule83Exp = r83Digits.join('+');
+                results.push({ rule: 'Rule 83', value: r83, exp: rule83Exp });
             }
 
             currentResults = results;
