@@ -187,6 +187,26 @@
             return { day, month, year: 0 };
         }
 
+        function gregorianToJdn(date) {
+            const a = Math.floor((14 - (date.getUTCMonth() + 1)) / 12);
+            const y = date.getUTCFullYear() + 4800 - a;
+            const m = (date.getUTCMonth() + 1) + 12 * a - 3;
+            return date.getUTCDate() + Math.floor((153 * m + 2) / 5) +
+                365 * y + Math.floor(y / 4) - Math.floor(y / 100) +
+                Math.floor(y / 400) - 32045;
+        }
+
+        function toMayanLongCount(date) {
+            const jdn = gregorianToJdn(date);
+            const days = jdn - 584283;
+            const baktun = Math.floor(days / 144000);
+            const katun = Math.floor((days % 144000) / 7200);
+            const tun = Math.floor((days % 7200) / 360);
+            const uinal = Math.floor((days % 360) / 20);
+            const kin = days % 20;
+            return { baktun, katun, tun, uinal, kin };
+        }
+
         function sumDigits(n) {
             return n.toString().split('').map(Number).reduce((a, b) => a + b, 0);
         }
@@ -432,6 +452,16 @@
                 const r79 = haab.day - tzolkinNumber;
                 const rule79Exp = `${haab.day}-${tzolkinNumber}`;
                 results.push({ rule: 'Rule 79', value: r79, exp: rule79Exp });
+
+                const r80 = tzolkinNumber + haab.day + CONST_9;
+                const rule80Exp = `${tzolkinNumber}+${haab.day}+${CONST_9}`;
+                results.push({ rule: 'Rule 80', value: r80, exp: rule80Exp });
+
+                const datePlus9 = new Date(Date.UTC(date.getUTCFullYear() + 9, date.getUTCMonth(), date.getUTCDate()));
+                const mlc = toMayanLongCount(datePlus9);
+                const r81 = mlc.baktun + mlc.katun + mlc.tun + mlc.uinal + mlc.kin;
+                const rule81Exp = `${mlc.baktun}+${mlc.katun}+${mlc.tun}+${mlc.uinal}+${mlc.kin}`;
+                results.push({ rule: 'Rule 81', value: r81, exp: rule81Exp });
             }
 
             currentResults = results;
