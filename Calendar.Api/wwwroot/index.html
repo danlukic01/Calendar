@@ -515,6 +515,14 @@
                 const r83 = r83Digits.reduce((a, b) => a + b, 0);
                 const rule83Exp = r83Digits.join('+');
                 results.push({ rule: 'Rule 83', value: r83, exp: rule83Exp });
+
+                const datePlus7 = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + 7));
+                const tz7 = toTzolkin(datePlus7);
+                const datePlus14 = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + 14));
+                const tz14 = toTzolkin(datePlus14);
+                const r84 = tzolkinNumber + tz7.number + tz14.number;
+                const rule84Exp = `${tzolkinNumber}+${tz7.number}+${tz14.number}`;
+                results.push({ rule: 'Rule 84', value: r84, exp: rule84Exp });
             }
 
             currentResults = results;
