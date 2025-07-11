@@ -406,6 +406,16 @@
                 results.push({ rule: `Rule ${idx + 14}`, value: res.value, exp: res.exp });
             });
 
+            if (use22) {
+                for (let ruleNum = 52; ruleNum <= 63; ruleNum++) {
+                    const idx = ruleNum - 1;
+                    if (results[idx]) {
+                        results[idx].value -= CONST_18;
+                        results[idx].exp += `-${CONST_18}`;
+                    }
+                }
+            }
+
             currentResults = results;
 
             const entryNumbers = currentEntry ? [
