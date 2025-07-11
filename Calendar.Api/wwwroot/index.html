@@ -190,9 +190,9 @@
             return n.toString().split('').map(Number).reduce((a, b) => a + b, 0);
         }
 
-        function ozlottoCalculations(date) {
+        function ozlottoCalculations(date, use22 = false) {
 
-            const CONST_21 = 21;
+            const CONST_21 = use22 ? 22 : 21;
             const CONST_11 = 11;
             const CONST_9 = 9;
             const CONST_18 = 18;
@@ -359,6 +359,18 @@
                 return { name, value, exp };
             });
 
+            const idxTG = additionalFormulas.findIndex(f => f[0] === 'Tzolkin + Gregorian');
+            if (idxTG !== -1) {
+                additionalResults[idxTG].value = parseInt(`${tDay}${gDay}`, 10);
+                additionalResults[idxTG].exp = `${tDay}+${gDay}`;
+            }
+
+            const idxGT = additionalFormulas.findIndex(f => f[0] === 'Gregorian + Tzolkin');
+            if (idxGT !== -1) {
+                additionalResults[idxGT].value = parseInt(`${gDay}${tDay}`, 10);
+                additionalResults[idxGT].exp = `${gDay}+${tDay}`;
+            }
+
             const rule1Exp = `${CONST_21}+${dd}+${mm}+${yearDigits.join('+')}+${const11Digits.join('+')}`;
             const rule2Exp = `${r1Digits.join('+')}+${const21Digits.join('+')}+${CONST_9}`;
             const rule3Exp = `${r2}+${r1Digits.join('+')}+${CONST_9}`;
@@ -446,8 +458,10 @@
 
             if (['Ozlotto', 'Powerball', 'Tattslotto'].includes(select.value)) {
                 const g = new Date(currentDates.gregorianDate + 'Z');
-                ozlottoCalculations(g);
-                display.textContent = `Constants: 21, 11, 18, 10`;
+                const use22 = select.value === 'Powerball';
+                ozlottoCalculations(g, use22);
+                const firstConst = use22 ? 22 : 21;
+                display.textContent = `Constants: ${firstConst}, 11, 18, 10`;
                 return;
             }
 
