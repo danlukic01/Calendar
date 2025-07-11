@@ -459,8 +459,15 @@
 
                 const datePlus9 = new Date(Date.UTC(date.getUTCFullYear() + 9, date.getUTCMonth(), date.getUTCDate()));
                 const mlc = toMayanLongCount(datePlus9);
-                const r81 = mlc.baktun + mlc.katun + mlc.tun + mlc.uinal + mlc.kin;
-                const rule81Exp = `${mlc.baktun}+${mlc.katun}+${mlc.tun}+${mlc.uinal}+${mlc.kin}`;
+                const r81Digits = [
+                    mlc.baktun,
+                    ...mlc.katun.toString().split(''),
+                    ...mlc.tun.toString().split(''),
+                    ...mlc.uinal.toString().split(''),
+                    ...mlc.kin.toString().split('')
+                ].map(Number);
+                const r81 = r81Digits.reduce((a, b) => a + b, 0);
+                const rule81Exp = r81Digits.join('+');
                 results.push({ rule: 'Rule 81', value: r81, exp: rule81Exp });
             }
 
