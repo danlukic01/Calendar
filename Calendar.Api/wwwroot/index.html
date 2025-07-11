@@ -204,17 +204,17 @@
             const yyyy = date.getUTCFullYear();
 
             const yearDigits = yyyy.toString().split('').map(Number);
+            const const21Digits = CONST_21.toString().split('').map(Number);
             const const11Digits = CONST_11.toString().split('').map(Number);
 
             const r1 =
-                CONST_21 +
+                const21Digits.reduce((a, b) => a + b, 0) +
                 dd +
                 mm +
                 yearDigits.reduce((a, b) => a + b, 0) +
                 const11Digits.reduce((a, b) => a + b, 0);
 
             const r1Digits = r1.toString().split('').map(Number);
-            const const21Digits = CONST_21.toString().split('').map(Number);
 
             const r2 =
                 r1Digits.reduce((a, b) => a + b, 0) +
@@ -371,7 +371,7 @@
                 additionalResults[idxGT].exp = `${gDay}+${tDay}`;
             }
 
-            const rule1Exp = `${CONST_21}+${dd}+${mm}+${yearDigits.join('+')}+${const11Digits.join('+')}`;
+            const rule1Exp = `${const21Digits.join('+')}+${dd}+${mm}+${yearDigits.join('+')}+${const11Digits.join('+')}`;
             const rule2Exp = `${r1Digits.join('+')}+${const21Digits.join('+')}+${CONST_9}`;
             const rule3Exp = `${r2}+${r1Digits.join('+')}+${CONST_9}`;
             const rule4Exp = r4Digits.join('+');
