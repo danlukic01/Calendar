@@ -138,7 +138,8 @@
                 currentEntry.powerball
             ] : [];
             currentResults.forEach(r => {
-                const matched = entryNumbers.includes(r.value);
+                const val = Math.abs(r.value);
+                const matched = entryNumbers.includes(val);
                 fetch('/api/lottomatches', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -146,7 +147,7 @@
                         lottoName: select.value,
                         drawDate: datePicker.value,
                         rule: r.rule,
-                        number: r.value,
+                        number: val,
                         matched: matched
                     })
                 });
@@ -439,11 +440,12 @@
             const matches = [];
             let output = '<ul>';
             results.forEach(r => {
-                const matched = entryNumbers.includes(r.value);
+                const val = Math.abs(r.value);
+                const matched = entryNumbers.includes(val);
                 if (matched) {
-                    matches.push({ rule: r.rule, number: r.value });
+                    matches.push({ rule: r.rule, number: val });
                 }
-                output += `<li${matched ? ' class="match"' : ''}>${r.rule}: ${r.exp} = <strong>${r.value}</strong></li>`;
+                output += `<li${matched ? ' class="match"' : ''}>${r.rule}: ${r.exp} = <strong>${val}</strong></li>`;
             });
             output += '</ul>';
             calcArea.innerHTML = output;
