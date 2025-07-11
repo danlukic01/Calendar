@@ -44,6 +44,24 @@ namespace Calendar.Api.Controllers
                 query = query.Where(m => m.Matched == matched.Value);
             return query.ToList();
         }
+
+        [HttpGet("numbers")]
+        public IEnumerable<int> Numbers(string? lottoName, DateTime? drawDate, bool? matched, bool distinct = false)
+        {
+            var query = _context.LottoMatches.AsQueryable();
+            if (!string.IsNullOrEmpty(lottoName))
+                query = query.Where(m => m.LottoName == lottoName);
+            if (drawDate.HasValue)
+                query = query.Where(m => m.DrawDate.Date == drawDate.Value.Date);
+            if (matched.HasValue)
+                query = query.Where(m => m.Matched == matched.Value);
+
+            var numbers = query.Select(m => m.Number);
+            if (distinct)
+                numbers = numbers.Distinct();
+
+            return numbers.ToList();
+        }
     }
 }
 
