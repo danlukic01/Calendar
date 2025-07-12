@@ -606,18 +606,24 @@ document.getElementById('batch-run').addEventListener('click', () => {
     const table = document.getElementById('batch-results');
     table.innerHTML = '';
     const header = table.insertRow();
-    ['Team A', 'Team B', 'YN % A', 'YN % B', `Root % A (${currentDateRoot})`, `Root % B (${currentDateRoot})`, 'YN Winner', 'Root Winner'].forEach(h => {
+    ['Team A', 'Team B', 'YN % A', 'YN % B', `Root % A (${currentDateRoot})`, `Root % B (${currentDateRoot})`, 'Predicted Winner', 'Root Winner'].forEach(h => {
         const th = document.createElement('th');
         th.textContent = h;
         header.appendChild(th);
     });
     results.forEach(r => {
         const row = table.insertRow();
-        [r.teamA, r.teamB, r.ynA, r.ynB, r.rootA, r.rootB, r.yesNoWinner, r.rootWinner].forEach(val => {
+        [r.teamA, r.teamB, r.ynA, r.ynB, r.rootA, r.rootB].forEach(val => {
             const td = row.insertCell();
             td.textContent = val;
             td.style.padding = '4px';
         });
+        const winTd = row.insertCell();
+        winTd.innerHTML = '\uD83C\uDFC6 <span class="winner-name">' + r.yesNoWinner + '</span>';
+        winTd.style.padding = '4px';
+        const rootTd = row.insertCell();
+        rootTd.innerHTML = '<span class="winner-name">' + r.rootWinner + '</span>';
+        rootTd.style.padding = '4px';
     });
 
     if (results.length > 0) {
@@ -629,7 +635,7 @@ document.getElementById('batch-run').addEventListener('click', () => {
 });
 
 document.getElementById('batch-download').addEventListener('click', e => {
-    const csvHeader = `Team A,Team B,YN % A,YN % B,Root % A (${currentDateRoot}),Root % B (${currentDateRoot}),YN Winner,Root Winner\n`;
+    const csvHeader = `Team A,Team B,YN % A,YN % B,Root % A (${currentDateRoot}),Root % B (${currentDateRoot}),Predicted Winner,Root Winner\n`;
     const data = e.target.dataset.csv;
     if (!data) return;
     const blob = new Blob([csvHeader + data], { type: 'text/csv' });
