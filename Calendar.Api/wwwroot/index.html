@@ -237,6 +237,32 @@
             return n.toString().split('').map(Number).reduce((a, b) => a + b, 0);
         }
 
+        function sumDigitsRule1(n) {
+            const digits = n.toString().split('').map(Number);
+            if (digits.length === 2) {
+                return {
+                    value: digits[0] + digits[1],
+                    exp: `${digits[0]}+${digits[1]}`
+                };
+            }
+            if (digits.length === 3) {
+                return {
+                    value: (digits[0] + digits[1]) + digits[2],
+                    exp: `(${digits[0]}+${digits[1]})+${digits[2]}`
+                };
+            }
+            if (digits.length === 4) {
+                return {
+                    value: (digits[0] + digits[1]) + digits[2] + digits[3],
+                    exp: `(${digits[0]}+${digits[1]})+${digits[2]}+${digits[3]}`
+                };
+            }
+            return {
+                value: digits.reduce((a, b) => a + b, 0),
+                exp: digits.join('+')
+            };
+        }
+
         function isPrime(num) {
             if (num < 2) return false;
             for (let i = 2; i * i <= num; i++) {
@@ -260,8 +286,8 @@
             const gDay = date.getUTCDate();
             const n = CONST_19 + gDay;
             const prime = nthPrime(n);
-            const result = sumDigits(prime);
-            const exp = `${CONST_19}+${gDay}=${n};prime(${n})=${prime};${prime.toString().split('').join('+')}`;
+            const { value: result, exp: digitsExp } = sumDigitsRule1(prime);
+            const exp = `${CONST_19}+${gDay}=${n};prime(${n})=${prime};${digitsExp}`;
             const results = [{ rule: 'Rule 1', value: result, exp }];
             currentResults = results;
 
