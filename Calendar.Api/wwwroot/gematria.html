@@ -29,15 +29,16 @@
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             padding: 20px 30px;
-            max-width: 500px;
+            max-width: 600px;
             width: 90%;
+            margin-bottom:20px;
         }
         h1 {
             margin-top: 0;
             font-size: 1.5rem;
             text-align: center;
         }
-        input {
+        input, select, button {
             width: 100%;
             padding: 8px;
             font-size: 1rem;
@@ -46,6 +47,9 @@
         #result {
             font-weight: bold;
             margin-top: 10px;
+        }
+        .result-phrase {
+            margin:4px 0;
         }
     </style>
 </head>
@@ -60,24 +64,137 @@
         <input type="text" id="text-input" placeholder="Enter text">
         <div id="result"></div>
     </div>
-<script>
-    function gematriaValue(str) {
-        return str.toUpperCase().split('').reduce((sum, ch) => {
-            const code = ch.charCodeAt(0);
-            if (code >= 65 && code <= 90) {
-                return sum + (code - 64);
-            }
-            if (code >= 48 && code <= 57) {
-                return sum + (code - 48);
-            }
-            return sum;
-        }, 0);
-    }
 
-    document.getElementById('text-input').addEventListener('input', function() {
-        const value = gematriaValue(this.value);
-        document.getElementById('result').textContent = 'Value: ' + value;
+    <div class="card">
+        <h1>AFL Gematria Match Predictor</h1>
+        <select id="team-a"></select>
+        <select id="team-b"></select>
+        <button id="predict-btn">Predict Winner</button>
+        <div id="prediction" style="font-weight:bold;margin-bottom:10px;"></div>
+        <div id="results-a"></div>
+        <div id="results-b"></div>
+    </div>
+
+<script>
+function gematriaValue(str) {
+    return str.toUpperCase().split('').reduce((sum, ch) => {
+        const code = ch.charCodeAt(0);
+        if (code >= 65 && code <= 90) {
+            return sum + (code - 64);
+        }
+        if (code >= 48 && code <= 57) {
+            return sum + (code - 48);
+        }
+        return sum;
+    }, 0);
+}
+
+function digitalRoot(num) {
+    while (num > 9) {
+        num = num.toString().split('').reduce((s,d)=>s+parseInt(d,10),0);
+    }
+    return num;
+}
+
+const teams = [
+    "Adelaide Crows",
+    "Brisbane Lions",
+    "Carlton Blues",
+    "Collingwood Magpies",
+    "Essendon Bombers",
+    "Fremantle Dockers",
+    "Geelong Cats",
+    "Gold Coast Suns",
+    "Greater Western Sydney Giants",
+    "Hawthorn Hawks",
+    "Melbourne Demons",
+    "North Melbourne Kangaroos",
+    "Port Adelaide Power",
+    "Richmond Tigers",
+    "St Kilda Saints",
+    "Sydney Swans",
+    "West Coast Eagles",
+    "Western Bulldogs"
+];
+
+const teamSelectA = document.getElementById('team-a');
+const teamSelectB = document.getElementById('team-b');
+
+teams.forEach(t => {
+    const optA = document.createElement('option');
+    optA.value = t;
+    optA.textContent = t;
+    teamSelectA.appendChild(optA);
+    const optB = document.createElement('option');
+    optB.value = t;
+    optB.textContent = t;
+    teamSelectB.appendChild(optB);
+});
+
+function createPhrases(team, date) {
+    return [
+        `${team} win the game on ${date}`,
+        `${team} wins the game on ${date}`,
+        `${team} won the game on ${date}`,
+        `${team} lose the game on ${date}`,
+        `${team} loses the game on ${date}`,
+        `${team} lost the game on ${date}`
+    ];
+}
+
+function classify(root) {
+    if (root === 4) return {type:'yes', color:'green'};
+    if (root === 2) return {type:'no', color:'red'};
+    if (root === 3 || root === 5) return {type:'yes', color:'lightgreen'};
+    if (root === 1) return {type:'no', color:'orange'};
+    return {type:'neutral', color:'gray'};
+}
+
+function analyzeTeam(team, date) {
+    const phrases = createPhrases(team, date);
+    return phrases.map(p => {
+        const val = gematriaValue(p);
+        const root = digitalRoot(val);
+        const cls = classify(root);
+        return { phrase: p, root: root, color: cls.color, type: cls.type };
     });
+}
+
+function displayTeamResults(team, results, container) {
+    container.innerHTML = `<h3>${team}</h3>`;
+    results.forEach(r => {
+        const div = document.createElement('div');
+        div.className = 'result-phrase';
+        div.textContent = `${r.phrase} (${r.root})`;
+        div.style.color = r.color;
+        container.appendChild(div);
+    });
+}
+
+function predict() {
+    const teamA = teamSelectA.value;
+    const teamB = teamSelectB.value;
+    if (!teamA || !teamB) return;
+    const today = new Date();
+    const dateStr = `${today.getDate()}${today.getMonth()+1}${today.getFullYear()}`;
+    const resA = analyzeTeam(teamA, dateStr);
+    const resB = analyzeTeam(teamB, dateStr);
+    displayTeamResults(teamA, resA, document.getElementById('results-a'));
+    displayTeamResults(teamB, resB, document.getElementById('results-b'));
+    const yesA = resA.filter(r=>r.type==='yes').length;
+    const yesB = resB.filter(r=>r.type==='yes').length;
+    let winner = 'Undetermined';
+    if (yesA > yesB) winner = teamA;
+    else if (yesB > yesA) winner = teamB;
+    document.getElementById('prediction').textContent = 'Predicted Winner: ' + winner;
+}
+
+document.getElementById('predict-btn').addEventListener('click', predict);
+
+document.getElementById('text-input').addEventListener('input', function() {
+    const value = gematriaValue(this.value);
+    document.getElementById('result').textContent = 'Value: ' + value;
+});
 </script>
 </body>
 </html>
