@@ -104,7 +104,7 @@
         const lotteryConstants = {
             Ozlotto: { constants: [21, 11] },
             Powerball: { constant: 104116830 },
-            Tattslotto: { constant: 162109830 }
+            Tattslotto: { constant: 19 }
         };
 
         const select = document.getElementById('lotto-select');
@@ -235,6 +235,64 @@
 
         function sumDigits(n) {
             return n.toString().split('').map(Number).reduce((a, b) => a + b, 0);
+        }
+
+        function isPrime(num) {
+            if (num < 2) return false;
+            for (let i = 2; i * i <= num; i++) {
+                if (num % i === 0) return false;
+            }
+            return true;
+        }
+
+        function nthPrime(n) {
+            let count = 0;
+            let num = 1;
+            while (count < n) {
+                num++;
+                if (isPrime(num)) count++;
+            }
+            return num;
+        }
+
+        function tattslottoCalculations(date) {
+            const CONST_19 = 19;
+            const gDay = date.getUTCDate();
+            const n = CONST_19 + gDay;
+            const prime = nthPrime(n);
+            const result = sumDigits(prime);
+            const exp = `${CONST_19}+${gDay}=${n};prime(${n})=${prime};${prime.toString().split('').join('+')}`;
+            const results = [{ rule: 'Rule 1', value: result, exp }];
+            currentResults = results;
+
+            const entryNumbers = currentEntry ? [
+                currentEntry.number1,
+                currentEntry.number2,
+                currentEntry.number3,
+                currentEntry.number4,
+                currentEntry.number5,
+                currentEntry.number6,
+                currentEntry.number7,
+                currentEntry.powerball
+            ] : [];
+            let output = '<ul>';
+            const matches = [];
+            results.forEach(r => {
+                const val = Math.abs(r.value);
+                const matched = entryNumbers.includes(val);
+                if (matched) matches.push({ rule: r.rule, number: val });
+                output += `<li${matched ? ' class="match"' : ''}>${r.rule}: ${r.exp} = <strong>${val}</strong></li>`;
+            });
+            output += '</ul>';
+            calcArea.innerHTML = output;
+            const matchDisplay = document.getElementById('match-display');
+            if (matches.length > 0) {
+                const unique = [...new Set(matches.map(m => m.number))];
+                const nums = unique.join(', ');
+                matchDisplay.textContent = `Matched numbers: ${nums}`;
+            } else {
+                matchDisplay.textContent = '';
+            }
         }
 
         function ozlottoCalculations(date, use22 = false) {
@@ -585,12 +643,17 @@
                 return;
             }
 
-            if (['Ozlotto', 'Powerball', 'Tattslotto'].includes(select.value)) {
+            if (['Ozlotto', 'Powerball'].includes(select.value)) {
                 const g = new Date(currentDates.gregorianDate + 'Z');
                 const use22 = select.value === 'Powerball';
                 ozlottoCalculations(g, use22);
                 const firstConst = use22 ? 22 : 21;
                 display.textContent = `Constants: ${firstConst}, 11, 18, 10`;
+                return;
+            } else if (select.value === 'Tattslotto') {
+                const g = new Date(currentDates.gregorianDate + 'Z');
+                tattslottoCalculations(g);
+                display.textContent = `Constant: 19`;
                 return;
             }
 
