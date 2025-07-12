@@ -143,39 +143,52 @@ function createPhrases(team, date) {
 }
 
 function classify(root) {
-    if (root === 4) return {type:'yes', color:'green'};
-    if (root === 2) return {type:'no', color:'red'};
-    if (root === 3 || root === 5) return {type:'yes', color:'lightgreen'};
-    if (root === 1) return {type:'no', color:'orange'};
-    return {type:'neutral', color:'gray'};
+    if (root === 4) return { color: 'green' };
+    if (root === 2) return { color: 'red' };
+    if (root === 3 || root === 5) return { color: 'yellow' };
+    if (root === 1) return { color: 'orange' };
+    return { color: 'gray' };
 }
 
 function analyzeTeam(team, date) {
     const phrases = createPhrases(team, date);
-    return phrases.map((p, idx) => {
+    const results = phrases.map((p, idx) => {
         const val = gematriaValue(p);
         const root = digitalRoot(val);
-        const cls = classify(root);
         const category = idx < 3 ? 'win' : 'lose';
-        return { phrase: p, root: root, color: cls.color, type: cls.type, category: category };
+        return { phrase: p, root: root, category: category, color: classify(root).color };
     });
+
+    const winRoots = results.filter(r => r.category === 'win').map(r => r.root);
+    const loseRoots = results.filter(r => r.category === 'lose').map(r => r.root);
+
+    const winAverage = digitalRoot(winRoots.reduce((s, n) => s + n, 0));
+    const loseAverage = digitalRoot(loseRoots.reduce((s, n) => s + n, 0));
+
+    return { details: results, winAverage, loseAverage };
 }
 
-function displayTeamResults(team, results, container) {
+function displayTeamResults(team, data, container) {
     container.innerHTML = `<h3>${team}</h3>`;
-    results.forEach(r => {
+    data.details.forEach(r => {
         const div = document.createElement('div');
         div.className = 'result-phrase';
         div.textContent = `${r.phrase} (${r.root})`;
         div.style.color = r.color;
         container.appendChild(div);
     });
+    const winDiv = document.createElement('div');
+    winDiv.textContent = `Win Avg: ${data.winAverage}`;
+    winDiv.style.fontWeight = 'bold';
+    winDiv.style.color = classify(data.winAverage).color;
+    container.appendChild(winDiv);
+    const loseDiv = document.createElement('div');
+    loseDiv.textContent = `Lose Avg: ${data.loseAverage}`;
+    loseDiv.style.fontWeight = 'bold';
+    loseDiv.style.color = classify(data.loseAverage).color;
+    container.appendChild(loseDiv);
 }
 
-function avg(arr) {
-    if (!arr.length) return 0;
-    return arr.reduce((s, n) => s + n, 0) / arr.length;
-}
 
 function predict() {
     const teamA = teamSelectA.value;
@@ -183,21 +196,24 @@ function predict() {
     if (!teamA || !teamB) return;
     const today = new Date();
     const dateStr = `${today.getDate()}${today.getMonth()+1}${today.getFullYear()}`;
-    const resA = analyzeTeam(teamA, dateStr);
-    const resB = analyzeTeam(teamB, dateStr);
-    displayTeamResults(teamA, resA, document.getElementById('results-a'));
-    displayTeamResults(teamB, resB, document.getElementById('results-b'));
-    const winAvgA = avg(resA.filter(r => r.category === 'win').map(r => r.root));
-    const loseAvgA = avg(resA.filter(r => r.category === 'lose').map(r => r.root));
-    const scoreA = winAvgA - loseAvgA;
+    const dataA = analyzeTeam(teamA, dateStr);
+    const dataB = analyzeTeam(teamB, dateStr);
 
-    const winAvgB = avg(resB.filter(r => r.category === 'win').map(r => r.root));
-    const loseAvgB = avg(resB.filter(r => r.category === 'lose').map(r => r.root));
-    const scoreB = winAvgB - loseAvgB;
+    displayTeamResults(teamA, dataA, document.getElementById('results-a'));
+    displayTeamResults(teamB, dataB, document.getElementById('results-b'));
+
+    const winDiffA = Math.abs(dataA.winAverage - 4);
+    const winDiffB = Math.abs(dataB.winAverage - 4);
+    const loseDiffA = Math.abs(dataA.loseAverage - 2);
+    const loseDiffB = Math.abs(dataB.loseAverage - 2);
+
+    const scoreA = loseDiffA - winDiffA;
+    const scoreB = loseDiffB - winDiffB;
 
     let winner = 'Undetermined';
     if (scoreA > scoreB) winner = teamA;
     else if (scoreB > scoreA) winner = teamB;
+
     document.getElementById('prediction').textContent = 'Predicted Winner: ' + winner;
 }
 
