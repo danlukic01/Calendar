@@ -1,10 +1,6 @@
 # Calendar API
 
-This project implements a simple multi‑calendar date calculation service based on the BRD requirements. It allows posting a start date and interval specification and returns the corresponding dates across several calendar systems.
-
-Date conversions for the Mayan Long Count, Tzolkin and Haab calendars use
-algorithms derived from the open source calendar utilities published by
-Fourmilab.
+This project implements a simple date calculation service. It previously returned dates across several calendar systems, but only the Gregorian calendar calculations are now enabled. Other calendar conversions remain in the code base but are commented out.
 
 ## Prerequisites
 - .NET SDK 7.0 or later
@@ -31,8 +27,7 @@ The response will include the generated dates for the next three days in all sup
 ```
 curl http://localhost:5000/api/date/current
 ```
-Returns the current date expressed in Gregorian, Julian, Hebrew, Mayan (Long Count),
-Tzolkin and Haab forms.
+Returns the current date expressed in Gregorian form.
 
 Migrations are not included because `dotnet ef` tools were unavailable in this
 environment. When running against a new SQL Server instance, create the initial
