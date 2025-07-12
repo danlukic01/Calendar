@@ -283,6 +283,7 @@
             const CONST_19 = 19;
             const gDay = date.getUTCDate();
             const gMonth = date.getUTCMonth() + 1;
+            const gYear = date.getUTCFullYear();
 
             const n1 = CONST_19 + gDay;
             const prime1 = nthPrime(n1);
@@ -294,9 +295,26 @@
             const { value: result2, exp: digitsExp2 } = sumDigitsRule1(prime2);
             const exp2 = `${CONST_19}+${gDay}+${gMonth}=${n2};prime(${n2})=${prime2};${digitsExp2}`;
 
+            const n3 = CONST_19 + gDay;
+            const prime3 = nthPrime(n3);
+            const { value: result3a, exp: digitsExp3a } = sumDigitsRule1(prime3);
+            const exp3a = `${CONST_19}+${gDay}=${n3};prime(${n3})=${prime3};${digitsExp3a}`;
+
+            const dayDigits = gDay.toString().split('').map(Number);
+            const monthDigits = gMonth.toString().split('').map(Number);
+            const yearDigits = gYear.toString().split('').map(Number);
+            const n4 = CONST_19 + dayDigits.reduce((a,b)=>a+b,0) +
+                monthDigits.reduce((a,b)=>a+b,0) +
+                yearDigits.reduce((a,b)=>a+b,0);
+            const prime4 = nthPrime(n4);
+            const { value: result3b, exp: digitsExp3b } = sumDigitsRule1(prime4);
+            const exp3b = `${CONST_19}+${dayDigits.join('+')}+${monthDigits.join('+')}+${yearDigits.join('+')}=${n4};prime(${n4})=${prime4};${digitsExp3b}`;
+
             const results = [
                 { rule: 'Rule 1', value: result1, exp: exp1 },
-                { rule: 'Rule 2', value: result2, exp: exp2 }
+                { rule: 'Rule 2', value: result2, exp: exp2 },
+                { rule: 'Rule 3', value: result3a, exp: exp3a },
+                { rule: 'Rule 3', value: result3b, exp: exp3b }
             ];
             currentResults = results;
 
