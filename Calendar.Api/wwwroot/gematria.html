@@ -81,6 +81,7 @@
         <button id="predict-btn">Predict Winner</button>
         <div id="prediction" style="font-weight:bold;margin-bottom:10px;"></div>
         <div id="calendar-results"></div>
+        <div id="round-results"></div>
     </div>
 
 <script>
@@ -268,6 +269,47 @@ function buildCalendarSection(name, teamA, teamB, dataA, dataB) {
     return { section: sec, pointsA, pointsB };
 }
 
+async function fetchCurrentRoundGames() {
+    const year = new Date().getUTCFullYear();
+    const apiUrl = `https://api.squiggle.com.au/?q=games;year=${year};next=1`;
+    try {
+        const res = await fetch(apiUrl);
+        if (!res.ok) throw new Error('api');
+        const data = await res.json();
+        if (data.games && data.games.length > 0) {
+            const upcomingRound = Math.min(...data.games.map(g => g.round));
+            return data.games.filter(g => g.round === upcomingRound).map(g => ({
+                teamA: g.hteam || g.homeTeam,
+                teamB: g.ateam || g.awayTeam,
+                date: g.date.substring(0,10)
+            }));
+        }
+    } catch (e) {
+        const res = await fetch('data/round.json');
+        const data = await res.json();
+        return data.games;
+    }
+    return [];
+}
+
+async function predictCurrentRound() {
+    const games = await fetchCurrentRoundGames();
+    const roundDiv = document.getElementById('round-results');
+    roundDiv.innerHTML = '';
+    for (const g of games) {
+        const dates = { gregorianDate: g.date };
+        const dataA = analyzeCalendars(g.teamA, dates);
+        const dataB = analyzeCalendars(g.teamB, dates);
+        const { section } = buildCalendarSection('Gregorian', g.teamA, g.teamB, dataA['Gregorian'], dataB['Gregorian']);
+        const wrapper = document.createElement('div');
+        const head = document.createElement('h2');
+        head.textContent = `${g.teamA} vs ${g.teamB} - ${formatGregorian(g.date)}`;
+        wrapper.appendChild(head);
+        wrapper.appendChild(section);
+        roundDiv.appendChild(wrapper);
+    }
+}
+
 
 function predict() {
     const teamA = teamSelectA.value;
@@ -304,6 +346,8 @@ function predict() {
     container.appendChild(summarySec);
 
     document.getElementById('prediction').textContent = overallWinner;
+
+    predictCurrentRound();
 }
 
 document.getElementById('predict-btn').addEventListener('click', predict);
