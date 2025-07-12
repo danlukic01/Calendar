@@ -282,11 +282,22 @@
         function tattslottoCalculations(date) {
             const CONST_19 = 19;
             const gDay = date.getUTCDate();
-            const n = CONST_19 + gDay;
-            const prime = nthPrime(n);
-            const { value: result, exp: digitsExp } = sumDigitsRule1(prime);
-            const exp = `${CONST_19}+${gDay}=${n};prime(${n})=${prime};${digitsExp}`;
-            const results = [{ rule: 'Rule 1', value: result, exp }];
+            const gMonth = date.getUTCMonth() + 1;
+
+            const n1 = CONST_19 + gDay;
+            const prime1 = nthPrime(n1);
+            const { value: result1, exp: digitsExp1 } = sumDigitsRule1(prime1);
+            const exp1 = `${CONST_19}+${gDay}=${n1};prime(${n1})=${prime1};${digitsExp1}`;
+
+            const n2 = CONST_19 + gDay + gMonth;
+            const prime2 = nthPrime(n2);
+            const { value: result2, exp: digitsExp2 } = sumDigitsRule1(prime2);
+            const exp2 = `${CONST_19}+${gDay}+${gMonth}=${n2};prime(${n2})=${prime2};${digitsExp2}`;
+
+            const results = [
+                { rule: 'Rule 1', value: result1, exp: exp1 },
+                { rule: 'Rule 2', value: result2, exp: exp2 }
+            ];
             currentResults = results;
 
             const entryNumbers = currentEntry ? [
