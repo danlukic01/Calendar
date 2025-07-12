@@ -197,41 +197,23 @@ function classify(root) {
 
 function analyzePhrases(team, date) {
     const phrases = createPhrases(team, date);
-    const results = phrases.map((p, idx) => {
+    return phrases.map((p, idx) => {
         const val = gematriaValue(p);
         const root = digitalRoot(val);
         const category = idx < 3 ? 'win' : 'lose';
         return { phrase: p, root: root, category: category, color: classify(root).color };
     });
-
-    const winRoots = results.filter(r => r.category === 'win').map(r => r.root);
-    const loseRoots = results.filter(r => r.category === 'lose').map(r => r.root);
-
-    const winAverage = digitalRoot(winRoots.reduce((s, n) => s + n, 0));
-    const loseAverage = digitalRoot(loseRoots.reduce((s, n) => s + n, 0));
-
-    return { details: results, winAverage, loseAverage };
 }
 
 function displayTeamResults(team, data, container) {
     container.innerHTML = `<h3>${team}</h3>`;
-    data.details.forEach(r => {
+    data.forEach(r => {
         const div = document.createElement('div');
         div.className = 'result-phrase';
         div.textContent = `${r.phrase} (${r.root})`;
         div.style.color = r.color;
         container.appendChild(div);
     });
-    const winDiv = document.createElement('div');
-    winDiv.textContent = `Win Avg: ${data.winAverage}`;
-    winDiv.style.fontWeight = 'bold';
-    winDiv.style.color = classify(data.winAverage).color;
-    container.appendChild(winDiv);
-    const loseDiv = document.createElement('div');
-    loseDiv.textContent = `Lose Avg: ${data.loseAverage}`;
-    loseDiv.style.fontWeight = 'bold';
-    loseDiv.style.color = classify(data.loseAverage).color;
-    container.appendChild(loseDiv);
 }
 
 function analyzeCalendars(team, dates) {
@@ -249,27 +231,33 @@ function analyzeCalendars(team, dates) {
     return out;
 }
 
-function avgColor(val, target) {
-    const diff = Math.abs(val - target);
-    if (target === 4) {
-        if (diff === 0) return '#008000';
-        if (diff === 1) return '#4caf50';
-        if (diff === 2) return '#9ccc65';
-        return '#ccc';
-    } else {
-        if (diff === 0) return '#ff0000';
-        if (diff === 1) return '#ff5555';
-        if (diff === 2) return '#ff9999';
-        return '#ccc';
+function computePoints(dataA, dataB) {
+    let pointsA = 0, pointsB = 0;
+    for (let i = 0; i < dataA.length; i++) {
+        const diffA = Math.abs(dataA[i].root - 4);
+        const diffB = Math.abs(dataB[i].root - 4);
+        if (diffA < diffB) {
+            pointsA += 1;
+        } else if (diffB < diffA) {
+            pointsB += 1;
+        } else {
+            pointsA += 0.5;
+            pointsB += 0.5;
+        }
     }
+    return { pointsA, pointsB };
 }
 
 function buildCalendarSection(name, teamA, teamB, dataA, dataB) {
+    const { pointsA, pointsB } = computePoints(dataA, dataB);
     const sec = document.createElement('div');
     sec.className = 'calendar-section';
     const heading = document.createElement('h3');
-    heading.textContent = `${name} - Predicted Winner: ` +
-        (Math.abs(dataA.winAverage-4) <= Math.abs(dataB.winAverage-4) ? teamA : teamB);
+    let predicted;
+    if (pointsA > pointsB) predicted = teamA;
+    else if (pointsB > pointsA) predicted = teamB;
+    else predicted = 'Draw';
+    heading.textContent = `${name} - Predicted Winner: ${predicted}`;
     sec.appendChild(heading);
 
     const teamDivA = document.createElement('div');
@@ -280,19 +268,11 @@ function buildCalendarSection(name, teamA, teamB, dataA, dataB) {
     displayTeamResults(teamB, dataB, teamDivB);
     sec.appendChild(teamDivB);
 
-    const avgInfo = document.createElement('div');
-    avgInfo.innerHTML =
-        `<strong>${teamA} Win Avg:</strong> <span style="color:${avgColor(dataA.winAverage,4)}">${dataA.winAverage}</span> `+
-        `| <strong>${teamB} Win Avg:</strong> <span style="color:${avgColor(dataB.winAverage,4)}">${dataB.winAverage}</span>`;
-    sec.appendChild(avgInfo);
+    const scoreInfo = document.createElement('div');
+    scoreInfo.textContent = `${teamA} Points: ${pointsA} | ${teamB} Points: ${pointsB}`;
+    sec.appendChild(scoreInfo);
 
-    const loseInfo = document.createElement('div');
-    loseInfo.innerHTML =
-        `<strong>${teamA} Lose Avg:</strong> <span style="color:${avgColor(dataA.loseAverage,2)}">${dataA.loseAverage}</span> `+
-        `| <strong>${teamB} Lose Avg:</strong> <span style="color:${avgColor(dataB.loseAverage,2)}">${dataB.loseAverage}</span>`;
-    sec.appendChild(loseInfo);
-
-    return sec;
+    return { section: sec, pointsA, pointsB };
 }
 
 
@@ -307,38 +287,27 @@ function predict() {
     const container = document.getElementById('calendar-results');
     container.innerHTML = '';
 
+    let totalA = 0;
+    let totalB = 0;
     Object.keys(dataA).forEach(cal => {
-        const sec = buildCalendarSection(cal, teamA, teamB, dataA[cal], dataB[cal]);
-        container.appendChild(sec);
+        const { section, pointsA, pointsB } = buildCalendarSection(cal, teamA, teamB, dataA[cal], dataB[cal]);
+        totalA += pointsA;
+        totalB += pointsB;
+        container.appendChild(section);
     });
-
-    // Calculate overall win/lose averages across calendars
-    const winAvgsA = Object.values(dataA).map(d => d.winAverage);
-    const winAvgsB = Object.values(dataB).map(d => d.winAverage);
-    const loseAvgsA = Object.values(dataA).map(d => d.loseAverage);
-    const loseAvgsB = Object.values(dataB).map(d => d.loseAverage);
-
-    const overallWinA = digitalRoot(winAvgsA.reduce((s, n) => s + n, 0));
-    const overallLoseA = digitalRoot(loseAvgsA.reduce((s, n) => s + n, 0));
-    const overallWinB = digitalRoot(winAvgsB.reduce((s, n) => s + n, 0));
-    const overallLoseB = digitalRoot(loseAvgsB.reduce((s, n) => s + n, 0));
 
     const summarySec = document.createElement('div');
     summarySec.className = 'calendar-section';
     const heading = document.createElement('h3');
-    const overallWinner = Math.abs(overallWinA - 4) <= Math.abs(overallWinB - 4) ? teamA : teamB;
+    let overallWinner;
+    if (totalA > totalB) overallWinner = teamA;
+    else if (totalB > totalA) overallWinner = teamB;
+    else overallWinner = 'Draw';
     heading.textContent = `Overall Predicted Winner: ${overallWinner}`;
     summarySec.appendChild(heading);
-    const winInfo = document.createElement('div');
-    winInfo.innerHTML =
-        `<strong>${teamA} Overall Win Avg:</strong> <span style="color:${avgColor(overallWinA,4)}">${overallWinA}</span> ` +
-        `| <strong>${teamB} Overall Win Avg:</strong> <span style="color:${avgColor(overallWinB,4)}">${overallWinB}</span>`;
-    summarySec.appendChild(winInfo);
-    const loseInfo = document.createElement('div');
-    loseInfo.innerHTML =
-        `<strong>${teamA} Overall Lose Avg:</strong> <span style="color:${avgColor(overallLoseA,2)}">${overallLoseA}</span> ` +
-        `| <strong>${teamB} Overall Lose Avg:</strong> <span style="color:${avgColor(overallLoseB,2)}">${overallLoseB}</span>`;
-    summarySec.appendChild(loseInfo);
+    const pointsInfo = document.createElement('div');
+    pointsInfo.textContent = `${teamA} Total Points: ${totalA} | ${teamB} Total Points: ${totalB}`;
+    summarySec.appendChild(pointsInfo);
     container.appendChild(summarySec);
 
     document.getElementById('prediction').textContent = overallWinner;
