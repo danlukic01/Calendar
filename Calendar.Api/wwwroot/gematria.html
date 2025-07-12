@@ -371,7 +371,7 @@ function buildTeamTable(team, data) {
     table.className = 'phrase-table';
     const thead = table.createTHead();
     const hrow = thead.insertRow();
-    ['Phrase', 'Gematria', 'Match', 'Score'].forEach(t => {
+    ['Phrase', 'Gematria', 'Match', 'Score', 'Root Score'].forEach(t => {
         const th = document.createElement('th');
         th.textContent = t;
         hrow.appendChild(th);
@@ -380,9 +380,10 @@ function buildTeamTable(team, data) {
     data.forEach(item => {
         const row = tbody.insertRow();
         const score = phraseScore(item);
+        const rootScore = phraseScoreDateRoot(item, currentDateRoot);
         if (score > 0) row.className = 'positive';
         else if (score < 0) row.className = 'negative';
-        [item.phrase, item.value, item.root === currentDateRoot ? '✔' : '', score]
+        [item.phrase, item.value, item.root === currentDateRoot ? '✔' : '', score, rootScore]
             .forEach(val => {
                 const td = row.insertCell();
                 td.textContent = val;
