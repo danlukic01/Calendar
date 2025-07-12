@@ -391,7 +391,7 @@ function buildTeamTable(team, data, colorClass) {
     table.className = 'phrase-table';
     const thead = table.createTHead();
     const hrow = thead.insertRow();
-    ['Phrase', 'Gematria', 'Match', 'Score', 'Root Score'].forEach(t => {
+    ['Phrase', 'Gem', 'Match', 'Score', 'Root Score'].forEach(t => {
         const th = document.createElement('th');
         th.textContent = t;
         hrow.appendChild(th);
