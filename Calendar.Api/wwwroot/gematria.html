@@ -58,6 +58,16 @@
             padding:10px 15px;
             margin-bottom:20px;
         }
+        .mode-btn {
+            width:auto;
+            padding:6px 12px;
+            margin:0 5px 10px 5px;
+            cursor:pointer;
+        }
+        .mode-btn.active {
+            font-weight:bold;
+            background:#e0e0e0;
+        }
     </style>
 </head>
 <body>
@@ -73,7 +83,11 @@
     </div>
 
     <div class="card">
-        <h1>AFL Gematria Match Predictor</h1>
+        <h1 id="predictor-heading">AFL Gematria Match Predictor</h1>
+        <div id="mode-toggle" style="text-align:center;margin-bottom:10px;">
+            <button data-mode="AFL" class="mode-btn active">AFL</button>
+            <button data-mode="MLB" class="mode-btn">MLB</button>
+        </div>
         <select id="team-a"></select>
         <select id="team-b"></select>
         <input type="date" id="date-picker">
@@ -104,7 +118,7 @@ function digitalRoot(num) {
     return num;
 }
 
-const teams = [
+const aflTeams = [
     "Adelaide Crows",
     "Brisbane Lions",
     "Carlton Blues",
@@ -125,19 +139,72 @@ const teams = [
     "Western Bulldogs"
 ];
 
+const mlbTeams = [
+    "Baltimore Orioles",
+    "Boston Red Sox",
+    "Chicago White Sox",
+    "Cleveland Guardians",
+    "Detroit Tigers",
+    "Houston Astros",
+    "Kansas City Royals",
+    "Los Angeles Angels",
+    "Minnesota Twins",
+    "New York Yankees",
+    "Oakland Athletics",
+    "Seattle Mariners",
+    "Tampa Bay Rays",
+    "Texas Rangers",
+    "Toronto Blue Jays",
+    "Arizona Diamondbacks",
+    "Atlanta Braves",
+    "Chicago Cubs",
+    "Cincinnati Reds",
+    "Colorado Rockies",
+    "Los Angeles Dodgers",
+    "Miami Marlins",
+    "Milwaukee Brewers",
+    "New York Mets",
+    "Philadelphia Phillies",
+    "Pittsburgh Pirates",
+    "San Diego Padres",
+    "San Francisco Giants",
+    "Saint Louis Cardinals",
+    "Washington Nationals"
+];
+
+const modes = { AFL: aflTeams, MLB: mlbTeams };
+let currentMode = 'AFL';
+
 const teamSelectA = document.getElementById('team-a');
 const teamSelectB = document.getElementById('team-b');
+const headingEl = document.getElementById('predictor-heading');
 let currentDates = null;
 
-teams.forEach(t => {
-    const optA = document.createElement('option');
-    optA.value = t;
-    optA.textContent = t;
-    teamSelectA.appendChild(optA);
-    const optB = document.createElement('option');
-    optB.value = t;
-    optB.textContent = t;
-    teamSelectB.appendChild(optB);
+function populateTeams() {
+    teamSelectA.innerHTML = '';
+    teamSelectB.innerHTML = '';
+    modes[currentMode].forEach(t => {
+        const optA = document.createElement('option');
+        optA.value = t;
+        optA.textContent = t;
+        teamSelectA.appendChild(optA);
+        const optB = document.createElement('option');
+        optB.value = t;
+        optB.textContent = t;
+        teamSelectB.appendChild(optB);
+    });
+    headingEl.textContent = `${currentMode} Gematria Match Predictor`;
+}
+
+populateTeams();
+
+document.querySelectorAll('#mode-toggle button').forEach(btn => {
+    btn.addEventListener('click', () => {
+        currentMode = btn.getAttribute('data-mode');
+        document.querySelectorAll('#mode-toggle button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        populateTeams();
+    });
 });
 
 const datePicker = document.getElementById('date-picker');
