@@ -411,6 +411,10 @@ function normalizeScores(a, b) {
     return { a: Math.round(normA), b: Math.round(normB) };
 }
 
+function cleanTeamName(name) {
+    return name.replace(/^[\s\"'()]+|[\s\"'()]+$/g, '').trim();
+}
+
 document.getElementById('batch-file').addEventListener('change', e => {
     const file = e.target.files[0];
     if (!file) return;
@@ -429,8 +433,8 @@ document.getElementById('batch-run').addEventListener('click', () => {
     lines.forEach(line => {
         const parts = line.split(',');
         if (parts.length < 2) return;
-        const teamA = parts[0].trim();
-        const teamB = parts[1].trim();
+        const teamA = cleanTeamName(parts[0]);
+        const teamB = cleanTeamName(parts[1]);
         if (!teamA || !teamB) return;
         const { totalA, totalB, winner } = computeGameScore(teamA, teamB);
         const norm = normalizeScores(totalA, totalB);
