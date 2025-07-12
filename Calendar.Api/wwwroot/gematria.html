@@ -152,11 +152,12 @@ function classify(root) {
 
 function analyzeTeam(team, date) {
     const phrases = createPhrases(team, date);
-    return phrases.map(p => {
+    return phrases.map((p, idx) => {
         const val = gematriaValue(p);
         const root = digitalRoot(val);
         const cls = classify(root);
-        return { phrase: p, root: root, color: cls.color, type: cls.type };
+        const category = idx < 3 ? 'win' : 'lose';
+        return { phrase: p, root: root, color: cls.color, type: cls.type, category: category };
     });
 }
 
@@ -171,6 +172,11 @@ function displayTeamResults(team, results, container) {
     });
 }
 
+function avg(arr) {
+    if (!arr.length) return 0;
+    return arr.reduce((s, n) => s + n, 0) / arr.length;
+}
+
 function predict() {
     const teamA = teamSelectA.value;
     const teamB = teamSelectB.value;
@@ -181,11 +187,17 @@ function predict() {
     const resB = analyzeTeam(teamB, dateStr);
     displayTeamResults(teamA, resA, document.getElementById('results-a'));
     displayTeamResults(teamB, resB, document.getElementById('results-b'));
-    const yesA = resA.filter(r=>r.type==='yes').length;
-    const yesB = resB.filter(r=>r.type==='yes').length;
+    const winAvgA = avg(resA.filter(r => r.category === 'win').map(r => r.root));
+    const loseAvgA = avg(resA.filter(r => r.category === 'lose').map(r => r.root));
+    const scoreA = winAvgA - loseAvgA;
+
+    const winAvgB = avg(resB.filter(r => r.category === 'win').map(r => r.root));
+    const loseAvgB = avg(resB.filter(r => r.category === 'lose').map(r => r.root));
+    const scoreB = winAvgB - loseAvgB;
+
     let winner = 'Undetermined';
-    if (yesA > yesB) winner = teamA;
-    else if (yesB > yesA) winner = teamB;
+    if (scoreA > scoreB) winner = teamA;
+    else if (scoreB > scoreA) winner = teamB;
     document.getElementById('prediction').textContent = 'Predicted Winner: ' + winner;
 }
 
