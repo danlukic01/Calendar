@@ -312,7 +312,36 @@ function predict() {
         container.appendChild(sec);
     });
 
-    document.getElementById('prediction').textContent = '';
+    // Calculate overall win/lose averages across calendars
+    const winAvgsA = Object.values(dataA).map(d => d.winAverage);
+    const winAvgsB = Object.values(dataB).map(d => d.winAverage);
+    const loseAvgsA = Object.values(dataA).map(d => d.loseAverage);
+    const loseAvgsB = Object.values(dataB).map(d => d.loseAverage);
+
+    const overallWinA = digitalRoot(winAvgsA.reduce((s, n) => s + n, 0));
+    const overallLoseA = digitalRoot(loseAvgsA.reduce((s, n) => s + n, 0));
+    const overallWinB = digitalRoot(winAvgsB.reduce((s, n) => s + n, 0));
+    const overallLoseB = digitalRoot(loseAvgsB.reduce((s, n) => s + n, 0));
+
+    const summarySec = document.createElement('div');
+    summarySec.className = 'calendar-section';
+    const heading = document.createElement('h3');
+    const overallWinner = Math.abs(overallWinA - 4) <= Math.abs(overallWinB - 4) ? teamA : teamB;
+    heading.textContent = `Overall Predicted Winner: ${overallWinner}`;
+    summarySec.appendChild(heading);
+    const winInfo = document.createElement('div');
+    winInfo.innerHTML =
+        `<strong>${teamA} Overall Win Avg:</strong> <span style="color:${avgColor(overallWinA,4)}">${overallWinA}</span> ` +
+        `| <strong>${teamB} Overall Win Avg:</strong> <span style="color:${avgColor(overallWinB,4)}">${overallWinB}</span>`;
+    summarySec.appendChild(winInfo);
+    const loseInfo = document.createElement('div');
+    loseInfo.innerHTML =
+        `<strong>${teamA} Overall Lose Avg:</strong> <span style="color:${avgColor(overallLoseA,2)}">${overallLoseA}</span> ` +
+        `| <strong>${teamB} Overall Lose Avg:</strong> <span style="color:${avgColor(overallLoseB,2)}">${overallLoseB}</span>`;
+    summarySec.appendChild(loseInfo);
+    container.appendChild(summarySec);
+
+    document.getElementById('prediction').textContent = overallWinner;
 }
 
 document.getElementById('predict-btn').addEventListener('click', predict);
