@@ -58,7 +58,6 @@
     <div class="card">
         <h1>Gematria Calculator</h1>
         <input type="text" id="text-input" placeholder="Enter text">
-        <button id="calc-btn">Calculate</button>
         <div id="result"></div>
     </div>
 <script>
@@ -68,13 +67,15 @@
             if (code >= 65 && code <= 90) {
                 return sum + (code - 64);
             }
+            if (code >= 48 && code <= 57) {
+                return sum + (code - 48);
+            }
             return sum;
         }, 0);
     }
 
-    document.getElementById('calc-btn').addEventListener('click', function() {
-        const input = document.getElementById('text-input').value;
-        const value = gematriaValue(input);
+    document.getElementById('text-input').addEventListener('input', function() {
+        const value = gematriaValue(this.value);
         document.getElementById('result').textContent = 'Value: ' + value;
     });
 </script>
