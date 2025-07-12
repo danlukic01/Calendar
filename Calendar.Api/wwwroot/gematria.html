@@ -93,8 +93,19 @@
         <input type="date" id="date-picker">
         <div id="date-info" style="font-size:0.9rem;margin-bottom:10px;"></div>
         <button id="predict-btn">Predict Winner</button>
-        <div id="prediction" style="font-weight:bold;margin-bottom:10px;"></div>
-        <div id="calendar-results"></div>
+    <div id="prediction" style="font-weight:bold;margin-bottom:10px;"></div>
+    <div id="calendar-results"></div>
+    </div>
+
+    <div class="card">
+        <h1>Batch MLB Predictions</h1>
+        <textarea id="batch-input" rows="5" placeholder="Team A,Team B per line" style="width:100%;margin-bottom:10px;"></textarea>
+        <input type="file" id="batch-file" accept=".csv" style="margin-bottom:10px;" />
+        <button id="batch-run">Run Predictions</button>
+        <button id="batch-download" style="display:none;margin-left:10px;">Download CSV</button>
+        <div style="overflow-x:auto;">
+            <table id="batch-results" style="width:100%;margin-top:10px;border-collapse:collapse;"></table>
+        </div>
     </div>
 
 <script>
@@ -374,6 +385,100 @@ function predict() {
 }
 
 document.getElementById('predict-btn').addEventListener('click', predict);
+
+function computeGameScore(teamA, teamB) {
+    const dataA = analyzeCalendars(teamA, currentDates);
+    const dataB = analyzeCalendars(teamB, currentDates);
+    let totalA = 0;
+    let totalB = 0;
+    Object.keys(dataA).forEach(cal => {
+        const { pointsA, pointsB } = computePoints(dataA[cal], dataB[cal]);
+        totalA += pointsA;
+        totalB += pointsB;
+    });
+    let winner = 'Draw';
+    if (totalA > totalB) winner = teamA;
+    else if (totalB > totalA) winner = teamB;
+    return { totalA, totalB, winner };
+}
+
+function normalizeScores(a, b) {
+    if (a === b) return { a: 50, b: 50 };
+    const denom = Math.abs(a) + Math.abs(b);
+    if (denom === 0) return { a: 50, b: 50 };
+    const normA = 50 + ((a - b) / denom) * 50;
+    const normB = 100 - normA;
+    return { a: Math.round(normA), b: Math.round(normB) };
+}
+
+document.getElementById('batch-file').addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = evt => {
+        document.getElementById('batch-input').value = evt.target.result.trim();
+    };
+    reader.readAsText(file);
+});
+
+document.getElementById('batch-run').addEventListener('click', () => {
+    const text = document.getElementById('batch-input').value.trim();
+    if (!text || !currentDates) return;
+    const lines = text.split(/\r?\n/);
+    const results = [];
+    lines.forEach(line => {
+        const parts = line.split(',');
+        if (parts.length < 2) return;
+        const teamA = parts[0].trim();
+        const teamB = parts[1].trim();
+        if (!teamA || !teamB) return;
+        const { totalA, totalB, winner } = computeGameScore(teamA, teamB);
+        const norm = normalizeScores(totalA, totalB);
+        results.push({ teamA, teamB, scoreA: norm.a, scoreB: norm.b, winner });
+    });
+
+    const table = document.getElementById('batch-results');
+    table.innerHTML = '';
+    const header = table.insertRow();
+    ['Team A', 'Team B', 'Score A', 'Score B', 'Winner'].forEach(h => {
+        const th = document.createElement('th');
+        th.textContent = h;
+        th.style.borderBottom = '1px solid #ccc';
+        th.style.textAlign = 'left';
+        th.style.padding = '4px';
+        header.appendChild(th);
+    });
+    results.forEach(r => {
+        const row = table.insertRow();
+        [r.teamA, r.teamB, r.scoreA, r.scoreB, r.winner].forEach(val => {
+            const td = row.insertCell();
+            td.textContent = val;
+            td.style.padding = '4px';
+        });
+    });
+
+    if (results.length > 0) {
+        document.getElementById('batch-download').style.display = 'inline-block';
+        document.getElementById('batch-download').dataset.csv = results.map(r => `${r.teamA},${r.teamB},${r.scoreA},${r.scoreB},${r.winner}`).join('\n');
+    } else {
+        document.getElementById('batch-download').style.display = 'none';
+    }
+});
+
+document.getElementById('batch-download').addEventListener('click', e => {
+    const csvHeader = 'Team A,Team B,Score A,Score B,Winner\n';
+    const data = e.target.dataset.csv;
+    if (!data) return;
+    const blob = new Blob([csvHeader + data], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'predictions.csv';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+});
 
 document.getElementById('text-input').addEventListener('input', function() {
     const value = gematriaValue(this.value);
