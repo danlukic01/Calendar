@@ -168,14 +168,14 @@ const todayStr = new Date().toISOString().split('T')[0];
 datePicker.value = todayStr;
 loadDate(todayStr);
 
-function createPhrases(team, date) {
+function createPhrases(team, calendar, date) {
     return [
-        `${team} win the game on ${date}`,
-        `${team} wins the game on ${date}`,
-        `${team} won the game on ${date}`,
-        `${team} lose the game on ${date}`,
-        `${team} loses the game on ${date}`,
-        `${team} lost the game on ${date}`
+        `${team} win the game on ${calendar} date ${date}`,
+        `${team} wins the game on ${calendar} date ${date}`,
+        `${team} won the game on ${calendar} date ${date}`,
+        `${team} lose the game on ${calendar} date ${date}`,
+        `${team} loses the game on ${calendar} date ${date}`,
+        `${team} lost the game on ${calendar} date ${date}`
     ];
 }
 
@@ -195,8 +195,8 @@ function classify(root) {
     }
 }
 
-function analyzePhrases(team, date) {
-    const phrases = createPhrases(team, date);
+function analyzePhrases(team, calendar, date) {
+    const phrases = createPhrases(team, calendar, date);
     return phrases.map((p, idx) => {
         const val = gematriaValue(p);
         const root = digitalRoot(val);
@@ -226,7 +226,7 @@ function analyzeCalendars(team, dates) {
     };
     const out = {};
     for (const [name, val] of Object.entries(calStrings)) {
-        out[name] = analyzePhrases(team, val);
+        out[name] = analyzePhrases(team, name, val);
     }
     return out;
 }
