@@ -44,11 +44,11 @@ public class CalculationsController : ControllerBase
                 IntervalCalculationId = calc.Id,
                 StepNumber = i + 1,
                 GregorianDate = conv.GregorianDate,
-                JulianDate = conv.JulianDate,
-                MayanLongCount = conv.MayanLongCount,
-                Tzolkin = conv.Tzolkin,
-                Haab = conv.Haab,
-                HebrewDate = conv.HebrewDate
+                //JulianDate = conv.JulianDate,
+                //MayanLongCount = conv.MayanLongCount,
+                //Tzolkin = conv.Tzolkin,
+                //Haab = conv.Haab,
+                //HebrewDate = conv.HebrewDate
             };
             _context.IntervalCalculationResults.Add(result);
             calc.Results.Add(result);

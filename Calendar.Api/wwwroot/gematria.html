@@ -154,11 +154,7 @@ function loadDate(dateString) {
         .then(d => {
             currentDates = d;
             const g = formatGregorian(d.gregorianDate);
-            dateInfoDiv.innerHTML = `Gregorian: ${g}<br>`+
-                `Julian: ${d.julianDate}<br>`+
-                `Hebrew: ${d.hebrewDate}<br>`+
-                `Tzolkin: ${d.tzolkin}<br>`+
-                `Haab: ${d.haab}`;
+            dateInfoDiv.innerHTML = `Gregorian: ${g}`;
         });
 }
 
@@ -218,11 +214,7 @@ function displayTeamResults(team, data, container) {
 
 function analyzeCalendars(team, dates) {
     const calStrings = {
-        'Gregorian': formatGregorian(dates.gregorianDate),
-        'Julian': dates.julianDate,
-        'Hebrew': dates.hebrewDate,
-        'Tzolkin': dates.tzolkin,
-        'Haab': dates.haab
+        'Gregorian': formatGregorian(dates.gregorianDate)
     };
     const out = {};
     for (const [name, val] of Object.entries(calStrings)) {
