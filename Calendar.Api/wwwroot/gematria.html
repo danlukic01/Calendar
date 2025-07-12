@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gematria Calculator</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f7fa;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 0;
+            color: #333;
+        }
+        nav.main-nav {
+            margin-bottom: 20px;
+        }
+        nav.main-nav a {
+            margin: 0 10px;
+            color: #333;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .card {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 20px 30px;
+            max-width: 500px;
+            width: 90%;
+        }
+        h1 {
+            margin-top: 0;
+            font-size: 1.5rem;
+            text-align: center;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+        #result {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="main-nav">
+        <a href="index.html">Predict</a>
+        <a href="lotto-entry.html">Enter Numbers</a>
+        <a href="gematria.html">Gematria</a>
+    </nav>
+    <div class="card">
+        <h1>Gematria Calculator</h1>
+        <input type="text" id="text-input" placeholder="Enter text">
+        <button id="calc-btn">Calculate</button>
+        <div id="result"></div>
+    </div>
+<script>
+    function gematriaValue(str) {
+        return str.toUpperCase().split('').reduce((sum, ch) => {
+            const code = ch.charCodeAt(0);
+            if (code >= 65 && code <= 90) {
+                return sum + (code - 64);
+            }
+            return sum;
+        }, 0);
+    }
+
+    document.getElementById('calc-btn').addEventListener('click', function() {
+        const input = document.getElementById('text-input').value;
+        const value = gematriaValue(input);
+        document.getElementById('result').textContent = 'Value: ' + value;
+    });
+</script>
+</body>
+</html>
