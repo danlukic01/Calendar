@@ -51,6 +51,13 @@
         .result-phrase {
             margin:4px 0;
         }
+        .calendar-section {
+            background:#fff;
+            border-radius:8px;
+            box-shadow:0 2px 4px rgba(0,0,0,0.1);
+            padding:10px 15px;
+            margin-bottom:20px;
+        }
     </style>
 </head>
 <body>
@@ -69,10 +76,11 @@
         <h1>AFL Gematria Match Predictor</h1>
         <select id="team-a"></select>
         <select id="team-b"></select>
+        <input type="date" id="date-picker">
+        <div id="date-info" style="font-size:0.9rem;margin-bottom:10px;"></div>
         <button id="predict-btn">Predict Winner</button>
         <div id="prediction" style="font-weight:bold;margin-bottom:10px;"></div>
-        <div id="results-a"></div>
-        <div id="results-b"></div>
+        <div id="calendar-results"></div>
     </div>
 
 <script>
@@ -119,6 +127,7 @@ const teams = [
 
 const teamSelectA = document.getElementById('team-a');
 const teamSelectB = document.getElementById('team-b');
+let currentDates = null;
 
 teams.forEach(t => {
     const optA = document.createElement('option');
@@ -130,6 +139,34 @@ teams.forEach(t => {
     optB.textContent = t;
     teamSelectB.appendChild(optB);
 });
+
+const datePicker = document.getElementById('date-picker');
+const dateInfoDiv = document.getElementById('date-info');
+
+function formatGregorian(dateStr) {
+    const g = new Date(dateStr + 'Z');
+    return `${g.getUTCDate().toString().padStart(2,'0')}/${(g.getUTCMonth()+1).toString().padStart(2,'0')}/${g.getUTCFullYear()}`;
+}
+
+function loadDate(dateString) {
+    fetch(`/api/date/convert?date=${dateString}`)
+        .then(r => r.json())
+        .then(d => {
+            currentDates = d;
+            const g = formatGregorian(d.gregorianDate);
+            dateInfoDiv.innerHTML = `Gregorian: ${g}<br>`+
+                `Julian: ${d.julianDate}<br>`+
+                `Hebrew: ${d.hebrewDate}<br>`+
+                `Tzolkin: ${d.tzolkin}<br>`+
+                `Haab: ${d.haab}`;
+        });
+}
+
+datePicker.addEventListener('change', () => loadDate(datePicker.value));
+
+const todayStr = new Date().toISOString().split('T')[0];
+datePicker.value = todayStr;
+loadDate(todayStr);
 
 function createPhrases(team, date) {
     return [
@@ -143,14 +180,22 @@ function createPhrases(team, date) {
 }
 
 function classify(root) {
-    if (root === 4) return { color: 'green' };
-    if (root === 2) return { color: 'red' };
-    if (root === 3 || root === 5) return { color: 'yellow' };
-    if (root === 1) return { color: 'orange' };
-    return { color: 'gray' };
+    const diffYes = Math.abs(root - 4);
+    const diffNo = Math.abs(root - 2);
+    if (diffYes <= diffNo) {
+        if (diffYes === 0) return { color: '#008000' };
+        if (diffYes === 1) return { color: '#4caf50' };
+        if (diffYes === 2) return { color: '#9ccc65' };
+        return { color: '#ccc' };
+    } else {
+        if (diffNo === 0) return { color: '#ff0000' };
+        if (diffNo === 1) return { color: '#ff5555' };
+        if (diffNo === 2) return { color: '#ff9999' };
+        return { color: '#ccc' };
+    }
 }
 
-function analyzeTeam(team, date) {
+function analyzePhrases(team, date) {
     const phrases = createPhrases(team, date);
     const results = phrases.map((p, idx) => {
         const val = gematriaValue(p);
@@ -189,32 +234,85 @@ function displayTeamResults(team, data, container) {
     container.appendChild(loseDiv);
 }
 
+function analyzeCalendars(team, dates) {
+    const calStrings = {
+        'Gregorian': formatGregorian(dates.gregorianDate),
+        'Julian': dates.julianDate,
+        'Hebrew': dates.hebrewDate,
+        'Tzolkin': dates.tzolkin,
+        'Haab': dates.haab
+    };
+    const out = {};
+    for (const [name, val] of Object.entries(calStrings)) {
+        out[name] = analyzePhrases(team, val);
+    }
+    return out;
+}
+
+function avgColor(val, target) {
+    const diff = Math.abs(val - target);
+    if (target === 4) {
+        if (diff === 0) return '#008000';
+        if (diff === 1) return '#4caf50';
+        if (diff === 2) return '#9ccc65';
+        return '#ccc';
+    } else {
+        if (diff === 0) return '#ff0000';
+        if (diff === 1) return '#ff5555';
+        if (diff === 2) return '#ff9999';
+        return '#ccc';
+    }
+}
+
+function buildCalendarSection(name, teamA, teamB, dataA, dataB) {
+    const sec = document.createElement('div');
+    sec.className = 'calendar-section';
+    const heading = document.createElement('h3');
+    heading.textContent = `${name} - Predicted Winner: ` +
+        (Math.abs(dataA.winAverage-4) <= Math.abs(dataB.winAverage-4) ? teamA : teamB);
+    sec.appendChild(heading);
+
+    const teamDivA = document.createElement('div');
+    displayTeamResults(teamA, dataA, teamDivA);
+    sec.appendChild(teamDivA);
+
+    const teamDivB = document.createElement('div');
+    displayTeamResults(teamB, dataB, teamDivB);
+    sec.appendChild(teamDivB);
+
+    const avgInfo = document.createElement('div');
+    avgInfo.innerHTML =
+        `<strong>${teamA} Win Avg:</strong> <span style="color:${avgColor(dataA.winAverage,4)}">${dataA.winAverage}</span> `+
+        `| <strong>${teamB} Win Avg:</strong> <span style="color:${avgColor(dataB.winAverage,4)}">${dataB.winAverage}</span>`;
+    sec.appendChild(avgInfo);
+
+    const loseInfo = document.createElement('div');
+    loseInfo.innerHTML =
+        `<strong>${teamA} Lose Avg:</strong> <span style="color:${avgColor(dataA.loseAverage,2)}">${dataA.loseAverage}</span> `+
+        `| <strong>${teamB} Lose Avg:</strong> <span style="color:${avgColor(dataB.loseAverage,2)}">${dataB.loseAverage}</span>`;
+    sec.appendChild(loseInfo);
+
+    return sec;
+}
+
 
 function predict() {
     const teamA = teamSelectA.value;
     const teamB = teamSelectB.value;
-    if (!teamA || !teamB) return;
-    const today = new Date();
-    const dateStr = `${today.getDate()}${today.getMonth()+1}${today.getFullYear()}`;
-    const dataA = analyzeTeam(teamA, dateStr);
-    const dataB = analyzeTeam(teamB, dateStr);
+    if (!teamA || !teamB || !currentDates) return;
 
-    displayTeamResults(teamA, dataA, document.getElementById('results-a'));
-    displayTeamResults(teamB, dataB, document.getElementById('results-b'));
+    const dataA = analyzeCalendars(teamA, currentDates);
+    const dataB = analyzeCalendars(teamB, currentDates);
 
-    const winDiffA = Math.abs(dataA.winAverage - 4);
-    const winDiffB = Math.abs(dataB.winAverage - 4);
-    const loseDiffA = Math.abs(dataA.loseAverage - 2);
-    const loseDiffB = Math.abs(dataB.loseAverage - 2);
+    const container = document.getElementById('calendar-results');
+    container.innerHTML = '';
 
-    const scoreA = loseDiffA - winDiffA;
-    const scoreB = loseDiffB - winDiffB;
+    Object.keys(dataA).forEach(cal => {
+        const sec = buildCalendarSection(cal, teamA, teamB, dataA[cal], dataB[cal]);
+        container.appendChild(sec);
+    });
 
-    let winner = 'Undetermined';
-    if (scoreA > scoreB) winner = teamA;
-    else if (scoreB > scoreA) winner = teamB;
-
-    document.getElementById('prediction').textContent = 'Predicted Winner: ' + winner;
+    document.getElementById('prediction').textContent = '';
 }
 
 document.getElementById('predict-btn').addEventListener('click', predict);
