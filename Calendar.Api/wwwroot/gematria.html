@@ -93,7 +93,17 @@
         .team-section {
             flex:1;
             min-width:250px;
+            background:#fff;
+            border-radius:8px;
+            box-shadow:0 2px 4px rgba(0,0,0,0.1);
+            padding:10px;
         }
+        .team-section h4 {
+            margin-top:0;
+            text-align:center;
+        }
+        .team-section.team-a h4 { color:#007bff; }
+        .team-section.team-b h4 { color:#d9534f; }
         .phrase-table {
             width:100%;
             border-collapse:collapse;
@@ -103,6 +113,9 @@
             border:1px solid #ccc;
             padding:4px 6px;
         }
+        .phrase-table tbody tr:nth-child(even) {
+            background:#f9f9f9;
+        }
         .phrase-table tr.positive td {
             color:#008000;
             font-weight:bold;
@@ -111,6 +124,10 @@
             color:#ff0000;
             font-weight:bold;
         }
+        .score-pos { color:#008000; font-weight:bold; }
+        .score-neg { color:#ff0000; font-weight:bold; }
+        .root-score-pos { background:#dff0d8; font-weight:bold; }
+        .root-score-neg { background:#f2dede; font-weight:bold; }
         .score-summary {
             width:100%;
             border-collapse:collapse;
@@ -119,6 +136,9 @@
         .score-summary th, .score-summary td {
             border:1px solid #ccc;
             padding:4px 6px;
+        }
+        .score-summary tr:nth-child(even) {
+            background:#f9f9f9;
         }
         @media (max-width:600px) {
             .team-comparison {
@@ -361,9 +381,9 @@ function analyzePhrases(team, calendar, date) {
     });
 }
 
-function buildTeamTable(team, data) {
+function buildTeamTable(team, data, colorClass) {
     const div = document.createElement('div');
-    div.className = 'team-section';
+    div.className = 'team-section ' + colorClass;
     const heading = document.createElement('h4');
     heading.textContent = team;
     div.appendChild(heading);
@@ -384,9 +404,11 @@ function buildTeamTable(team, data) {
         if (score > 0) row.className = 'positive';
         else if (score < 0) row.className = 'negative';
         [item.phrase, item.value, item.root === currentDateRoot ? '✔' : '', score, rootScore]
-            .forEach(val => {
+            .forEach((val, idx) => {
                 const td = row.insertCell();
                 td.textContent = val;
+                if (idx === 3 && score !== 0) td.className = score > 0 ? 'score-pos' : 'score-neg';
+                if (idx === 4 && rootScore !== 0) td.className = rootScore > 0 ? 'root-score-pos' : 'root-score-neg';
             });
     });
     div.appendChild(table);
@@ -466,19 +488,27 @@ function buildCalendarSection(name, teamA, teamB, dataA, dataB) {
 
     const teamsDiv = document.createElement('div');
     teamsDiv.className = 'team-comparison';
-    teamsDiv.appendChild(buildTeamTable(teamA, dataA));
-    teamsDiv.appendChild(buildTeamTable(teamB, dataB));
+    teamsDiv.appendChild(buildTeamTable(teamA, dataA, 'team-a'));
+    teamsDiv.appendChild(buildTeamTable(teamB, dataB, 'team-b'));
     sec.appendChild(teamsDiv);
 
     const scoreTable = document.createElement('table');
     scoreTable.className = 'score-summary';
     let hr = scoreTable.insertRow();
-    hr.innerHTML = `<th></th><th>${teamA}</th><th>${teamB}</th>`;
+    hr.innerHTML = `<th>Metric</th><th>${teamA}</th><th>${teamB}</th>`;
     let r1 = scoreTable.insertRow();
     r1.innerHTML = `<td>Points</td><td>${pointsA}</td><td>${pointsB}</td>`;
     let r2 = scoreTable.insertRow();
     r2.innerHTML = `<td>Date Root</td><td>${rootPts.pointsA}</td><td>${rootPts.pointsB}</td>`;
     sec.appendChild(scoreTable);
+
+    if (predicted === teamA) {
+        r1.cells[1].classList.add('score-pos');
+        r2.cells[1].classList.add('root-score-pos');
+    } else if (predicted === teamB) {
+        r1.cells[2].classList.add('score-pos');
+        r2.cells[2].classList.add('root-score-pos');
+    }
 
     return { section: sec, pointsA, pointsB, rootA: rootPts.pointsA, rootB: rootPts.pointsB };
 }
@@ -500,7 +530,7 @@ function updatePredictionCard(teamA, teamB, totalA, totalB, rootA, rootB) {
     const table = document.createElement('table');
     table.className = 'score-summary';
     let h = table.insertRow();
-    h.innerHTML = `<th></th><th>${teamA}</th><th>${teamB}</th>`;
+    h.innerHTML = `<th>Metric</th><th>${teamA}</th><th>${teamB}</th>`;
     let r1 = table.insertRow();
     r1.innerHTML = `<td>Points</td><td>${totalA}</td><td>${totalB}</td>`;
     let r2 = table.insertRow();
@@ -514,6 +544,17 @@ function updatePredictionCard(teamA, teamB, totalA, totalB, rootA, rootB) {
     else if (rootB > rootA) rootWinner = teamB;
     rootDiv.innerHTML = `Date Root Winner (${currentDateRoot}): <span class="winner-name">${rootWinner}</span>`;
     card.appendChild(rootDiv);
+
+    if (overallWinner === teamA) {
+        r1.cells[1].classList.add('score-pos');
+    } else if (overallWinner === teamB) {
+        r1.cells[2].classList.add('score-pos');
+    }
+    if (rootWinner === teamA) {
+        r2.cells[1].classList.add('root-score-pos');
+    } else if (rootWinner === teamB) {
+        r2.cells[2].classList.add('root-score-pos');
+    }
 }
 
 function predict() {
