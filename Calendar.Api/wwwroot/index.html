@@ -245,16 +245,14 @@
                     exp: `${digits[0]}+${digits[1]}`
                 };
             }
-            if (digits.length === 3) {
+            if (digits.length >= 3) {
+                const firstTwo = parseInt(`${digits[0]}${digits[1]}`, 10);
+                const restDigits = digits.slice(2);
+                const restSum = restDigits.reduce((a, b) => a + b, 0);
+                const expRest = restDigits.length > 0 ? `+${restDigits.join('+')}` : '';
                 return {
-                    value: (digits[0] + digits[1]) + digits[2],
-                    exp: `(${digits[0]}+${digits[1]})+${digits[2]}`
-                };
-            }
-            if (digits.length === 4) {
-                return {
-                    value: (digits[0] + digits[1]) + digits[2] + digits[3],
-                    exp: `(${digits[0]}+${digits[1]})+${digits[2]}+${digits[3]}`
+                    value: firstTwo + restSum,
+                    exp: `${firstTwo}${expRest}`
                 };
             }
             return {
