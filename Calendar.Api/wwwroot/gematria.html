@@ -68,6 +68,63 @@
             padding:10px 15px;
             margin-bottom:20px;
         }
+        .prediction-card {
+            background:#fff;
+            border-radius:8px;
+            box-shadow:0 2px 8px rgba(0,0,0,0.1);
+            padding:15px;
+            margin-bottom:20px;
+            text-align:center;
+        }
+        .prediction-card .predicted-winner {
+            font-size:1.1rem;
+            margin-bottom:8px;
+        }
+        .winner-name {
+            font-weight:bold;
+            color:#008000;
+        }
+        .team-comparison {
+            display:flex;
+            flex-wrap:wrap;
+            gap:10px;
+            margin-bottom:10px;
+        }
+        .team-section {
+            flex:1;
+            min-width:250px;
+        }
+        .phrase-table {
+            width:100%;
+            border-collapse:collapse;
+            margin-bottom:10px;
+        }
+        .phrase-table th, .phrase-table td {
+            border:1px solid #ccc;
+            padding:4px 6px;
+        }
+        .phrase-table tr.positive td {
+            color:#008000;
+            font-weight:bold;
+        }
+        .phrase-table tr.negative td {
+            color:#ff0000;
+            font-weight:bold;
+        }
+        .score-summary {
+            width:100%;
+            border-collapse:collapse;
+            margin-top:10px;
+        }
+        .score-summary th, .score-summary td {
+            border:1px solid #ccc;
+            padding:4px 6px;
+        }
+        @media (max-width:600px) {
+            .team-comparison {
+                flex-direction:column;
+            }
+        }
         .mode-btn {
             width:auto;
             padding:6px 12px;
@@ -110,7 +167,7 @@
         <input type="date" id="date-picker">
         <div id="date-info" style="font-size:0.9rem;margin-bottom:10px;"></div>
         <button id="predict-btn">Predict Winner</button>
-    <div id="prediction" style="font-weight:bold;margin-bottom:10px;"></div>
+    <div id="prediction-card" class="prediction-card"></div>
     <div id="calendar-results"></div>
     </div>
 
@@ -300,19 +357,39 @@ function analyzePhrases(team, calendar, date) {
         const val = gematriaValue(p);
         const root = digitalRoot(val);
         const category = idx < 3 ? 'win' : 'lose';
-        return { phrase: p, root: root, category: category, color: classify(root).color };
+        return { phrase: p, value: val, root: root, category: category, color: classify(root).color };
     });
 }
 
-function displayTeamResults(team, data, container) {
-    container.innerHTML = `<h3>${team}</h3>`;
-    data.forEach(r => {
-        const div = document.createElement('div');
-        div.className = 'result-phrase';
-        div.textContent = `${r.phrase} (${r.root})`;
-        div.style.color = r.color;
-        container.appendChild(div);
+function buildTeamTable(team, data) {
+    const div = document.createElement('div');
+    div.className = 'team-section';
+    const heading = document.createElement('h4');
+    heading.textContent = team;
+    div.appendChild(heading);
+    const table = document.createElement('table');
+    table.className = 'phrase-table';
+    const thead = table.createTHead();
+    const hrow = thead.insertRow();
+    ['Phrase', 'Gematria', 'Match', 'Score'].forEach(t => {
+        const th = document.createElement('th');
+        th.textContent = t;
+        hrow.appendChild(th);
     });
+    const tbody = table.createTBody();
+    data.forEach(item => {
+        const row = tbody.insertRow();
+        const score = phraseScore(item);
+        if (score > 0) row.className = 'positive';
+        else if (score < 0) row.className = 'negative';
+        [item.phrase, item.value, item.root === currentDateRoot ? '✔' : '', score]
+            .forEach(val => {
+                const td = row.insertCell();
+                td.textContent = val;
+            });
+    });
+    div.appendChild(table);
+    return div;
 }
 
 function analyzeCalendars(team, dates) {
@@ -372,6 +449,7 @@ function computeDateRootPoints(dataA, dataB, target) {
 
 function buildCalendarSection(name, teamA, teamB, dataA, dataB) {
     const { pointsA, pointsB } = computeYesNoPoints(dataA, dataB);
+    const rootPts = computeDateRootPoints(dataA, dataB, currentDateRoot);
     const sec = document.createElement('div');
     sec.className = 'calendar-section';
     const heading = document.createElement('h3');
@@ -379,24 +457,58 @@ function buildCalendarSection(name, teamA, teamB, dataA, dataB) {
     if (pointsA > pointsB) predicted = teamA;
     else if (pointsB > pointsA) predicted = teamB;
     else predicted = 'Draw';
-    heading.textContent = `${name} - Predicted Winner: ${predicted}`;
+    heading.innerHTML = `${name} - Predicted Winner: <strong>${predicted}</strong>`;
     sec.appendChild(heading);
 
-    const teamDivA = document.createElement('div');
-    displayTeamResults(teamA, dataA, teamDivA);
-    sec.appendChild(teamDivA);
+    const teamsDiv = document.createElement('div');
+    teamsDiv.className = 'team-comparison';
+    teamsDiv.appendChild(buildTeamTable(teamA, dataA));
+    teamsDiv.appendChild(buildTeamTable(teamB, dataB));
+    sec.appendChild(teamsDiv);
 
-    const teamDivB = document.createElement('div');
-    displayTeamResults(teamB, dataB, teamDivB);
-    sec.appendChild(teamDivB);
+    const scoreTable = document.createElement('table');
+    scoreTable.className = 'score-summary';
+    let hr = scoreTable.insertRow();
+    hr.innerHTML = `<th></th><th>${teamA}</th><th>${teamB}</th>`;
+    let r1 = scoreTable.insertRow();
+    r1.innerHTML = `<td>Points</td><td>${pointsA}</td><td>${pointsB}</td>`;
+    let r2 = scoreTable.insertRow();
+    r2.innerHTML = `<td>Date Root</td><td>${rootPts.pointsA}</td><td>${rootPts.pointsB}</td>`;
+    sec.appendChild(scoreTable);
 
-    const scoreInfo = document.createElement('div');
-    scoreInfo.textContent = `${teamA} Points: ${pointsA} | ${teamB} Points: ${pointsB}`;
-    sec.appendChild(scoreInfo);
-
-    return { section: sec, pointsA, pointsB };
+    return { section: sec, pointsA, pointsB, rootA: rootPts.pointsA, rootB: rootPts.pointsB };
 }
 
+function updatePredictionCard(teamA, teamB, totalA, totalB, rootA, rootB) {
+    const card = document.getElementById('prediction-card');
+    card.innerHTML = '';
+
+    const winnerDiv = document.createElement('div');
+    winnerDiv.className = 'predicted-winner';
+    let overallWinner = 'Draw';
+    if (totalA > totalB) overallWinner = teamA;
+    else if (totalB > totalA) overallWinner = teamB;
+    winnerDiv.innerHTML = '\uD83C\uDFC6 Predicted Winner: <span class="winner-name">' + overallWinner + '</span>';
+    card.appendChild(winnerDiv);
+
+    const table = document.createElement('table');
+    table.className = 'score-summary';
+    let h = table.insertRow();
+    h.innerHTML = `<th></th><th>${teamA}</th><th>${teamB}</th>`;
+    let r1 = table.insertRow();
+    r1.innerHTML = `<td>Points</td><td>${totalA}</td><td>${totalB}</td>`;
+    let r2 = table.insertRow();
+    r2.innerHTML = `<td>Date Root</td><td>${rootA}</td><td>${rootB}</td>`;
+    card.appendChild(table);
+
+    const rootDiv = document.createElement('div');
+    rootDiv.className = 'predicted-winner';
+    let rootWinner = 'Draw';
+    if (rootA > rootB) rootWinner = teamA;
+    else if (rootB > rootA) rootWinner = teamB;
+    rootDiv.innerHTML = `Date Root Winner (${currentDateRoot}): <span class="winner-name">${rootWinner}</span>`;
+    card.appendChild(rootDiv);
+}
 
 function predict() {
     const teamA = teamSelectA.value;
@@ -414,40 +526,15 @@ function predict() {
     let rootTotalA = 0;
     let rootTotalB = 0;
     Object.keys(dataA).forEach(cal => {
-        const { section, pointsA, pointsB } = buildCalendarSection(cal, teamA, teamB, dataA[cal], dataB[cal]);
+        const { section, pointsA, pointsB, rootA, rootB } = buildCalendarSection(cal, teamA, teamB, dataA[cal], dataB[cal]);
         totalA += pointsA;
         totalB += pointsB;
-        const rootPts = computeDateRootPoints(dataA[cal], dataB[cal], currentDateRoot);
-        rootTotalA += rootPts.pointsA;
-        rootTotalB += rootPts.pointsB;
+        rootTotalA += rootA;
+        rootTotalB += rootB;
         container.appendChild(section);
     });
 
-    const summarySec = document.createElement('div');
-    summarySec.className = 'calendar-section';
-    const headingYes = document.createElement('h3');
-    let overallWinner;
-    if (totalA > totalB) overallWinner = teamA;
-    else if (totalB > totalA) overallWinner = teamB;
-    else overallWinner = 'Draw';
-    headingYes.textContent = `Overall Predicted Winner (Yes/No): ${overallWinner}`;
-    summarySec.appendChild(headingYes);
-    const headingDate = document.createElement('h3');
-    let rootWinner;
-    if (rootTotalA > rootTotalB) rootWinner = teamA;
-    else if (rootTotalB > rootTotalA) rootWinner = teamB;
-    else rootWinner = 'Draw';
-    headingDate.textContent = `Predicted Winner (Date Root ${currentDateRoot}): ${rootWinner}`;
-    summarySec.appendChild(headingDate);
-    const pointsInfo = document.createElement('div');
-    pointsInfo.textContent = `${teamA} Total Points: ${totalA} | ${teamB} Total Points: ${totalB}`;
-    summarySec.appendChild(pointsInfo);
-    const rootPoints = document.createElement('div');
-    rootPoints.textContent = `${teamA} Root Points: ${rootTotalA} | ${teamB} Root Points: ${rootTotalB}`;
-    summarySec.appendChild(rootPoints);
-    container.appendChild(summarySec);
-
-    document.getElementById('prediction').textContent = `Yes/No: ${overallWinner}, Date Root: ${rootWinner}`;
+    updatePredictionCard(teamA, teamB, totalA, totalB, rootTotalA, rootTotalB);
 }
 
 document.getElementById('predict-btn').addEventListener('click', predict);
