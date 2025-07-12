@@ -344,10 +344,22 @@ function computeYesNoPoints(dataA, dataB) {
     return { pointsA, pointsB };
 }
 
+// Calculate the score for a phrase relative to the provided date root.
+// Only phrases whose digital root matches the date root contribute points.
+// Win phrases contribute +1 and lose phrases contribute -1.
 function phraseScoreDateRoot(item, target) {
-    if (item.root !== target) return 0;
-    if (item.category === 'win') return 1;
-    if (item.category === 'lose') return -1;
+    if (item.root !== target) {
+        return 0; // phrase does not match the current date root
+    }
+
+    if (item.category === 'win') {
+        return 1;
+    }
+
+    if (item.category === 'lose') {
+        return -1;
+    }
+
     return 0;
 }
 
