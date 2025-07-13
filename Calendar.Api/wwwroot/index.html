@@ -238,6 +238,14 @@
             return n.toString().split('').map(Number).reduce((a, b) => a + b, 0);
         }
 
+        function digitalRoot(n) {
+            let result = n;
+            while (result >= 10) {
+                result = sumDigits(result);
+            }
+            return result;
+        }
+
         function sumDigitsRule1(n) {
             const digits = n.toString().split('').map(Number);
             if (digits.length === 2) {
@@ -311,11 +319,45 @@
             const { value: result3b, exp: digitsExp3b } = sumDigitsRule1(prime4);
             const exp3b = `${CONST_19}+${dayDigits.join('+')}+${monthDigits.join('+')}+${yearDigits.join('+')}=${n4};prime(${n4})=${prime4};${digitsExp3b}`;
 
+            const julianDay = parseInt(currentDates.julianDate.split('/')[0], 10);
+            const julianDigits = julianDay.toString().split('');
+            const julianSum = julianDigits.map(Number).reduce((a,b)=>a+b,0);
+            const julianSingle = digitalRoot(julianDay);
+
+            const rule5 = 25 + julianSum;
+            const rule5Exp = `25+${julianDigits.join('+')}`;
+
+            const rule6 = digitalRoot(rule5);
+            const rule6Exp = `sumDigits(${rule5.toString().split('').join('+')})`;
+
+            const rule7 = 25 - julianSingle;
+            const rule7Exp = `25-${julianSingle}`;
+
+            const rule8 = 25 + gDay;
+            const rule8Exp = `25+${gDay}`;
+
+            const rule9 = 25 - gDay;
+            const rule9Flip = parseInt(Math.abs(rule9).toString().split('').reverse().join(''), 10);
+            const rule9Exp = `25-${gDay}=${rule9};flip(${rule9})=${rule9Flip}`;
+
+            const rule10 = 20 + julianSum;
+            const rule10Exp = `20+${julianDigits.join('+')}`;
+
+            const rule11 = 20 + dayDigits.reduce((a,b)=>a+b,0);
+            const rule11Exp = `20+${dayDigits.join('+')}`;
+
             const results = [
                 { rule: 'Rule 1', value: result1, exp: exp1 },
                 { rule: 'Rule 2', value: result2, exp: exp2 },
                 { rule: 'Rule 3', value: result3a, exp: exp3a },
-                { rule: 'Rule 3', value: result3b, exp: exp3b }
+                { rule: 'Rule 3', value: result3b, exp: exp3b },
+                { rule: 'Rule 5', value: rule5, exp: rule5Exp },
+                { rule: 'Rule 6', value: rule6, exp: rule6Exp },
+                { rule: 'Rule 7', value: rule7, exp: rule7Exp },
+                { rule: 'Rule 8', value: rule8, exp: rule8Exp },
+                { rule: 'Rule 9', value: rule9, exp: rule9Exp },
+                { rule: 'Rule 10', value: rule10, exp: rule10Exp },
+                { rule: 'Rule 11', value: rule11, exp: rule11Exp }
             ];
             currentResults = results;
 
