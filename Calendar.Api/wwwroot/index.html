@@ -332,6 +332,7 @@
             const exp3b = `${CONST_19}+${dayDigits.join('+')}+${monthDigits.join('+')}+${yearDigits.join('+')}=${n4};prime(${n4})=${prime4};${digitsExp3b}`;
 
             const julianDay = parseInt(currentDates.julianDate.split('/')[0], 10);
+            const julianMonth = parseInt(currentDates.julianDate.split('/')[1], 10);
             const julianDigits = julianDay.toString().split('');
             const julianSum = julianDigits.map(Number).reduce((a,b)=>a+b,0);
             const julianSingle = digitalRoot(julianDay);
@@ -371,8 +372,8 @@
             const rule14 = CONST_18 + julianSum;
             const rule14Exp = `${CONST_18}+${julianDigits.join('+')}`;
 
-            const rule15 = CONST_18 + julianSum + gMonth;
-            const rule15Exp = `${CONST_18}+${julianDigits.join('+')}+${gMonth}`;
+            const rule15 = CONST_18 + julianSum + julianMonth;
+            const rule15Exp = `${CONST_18}+${julianDigits.join('+')}+${julianMonth}`;
 
             const results = [
                 { rule: 'Rule 1', value: result1, exp: exp1 },
