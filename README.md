@@ -54,9 +54,12 @@ endpoint and can be queried by lotto name, draw date and match status.
 
 ### Tattslotto rules API
 
+
 The endpoint `/api/tattslottorules` exposes three custom Tattslotto rules
 numbered 16–18 that use a date matrix. Provide a Gregorian day and month and
 the API returns the computed values for each rule.
+
+
 
 Example:
 
@@ -67,5 +70,8 @@ curl "http://localhost:5000/api/tattslottorules?day=12&month=7"
 The response will include:
 
 ```json
+
 { "rule16": 38, "rule17": 20, "rule18": 31 }
+
+
 ```
