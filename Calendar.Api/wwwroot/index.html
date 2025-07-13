@@ -363,7 +363,7 @@
             const r12Total = mlcNums[0] + mlcNums[1] + mlcNums[2] +
                 sumDigits(mlcNums[3]) + sumDigits(mlcNums[4]);
             const r12Single = digitalRoot(r12Total);
-            const r12Exp = `${mlcNums[0]}+${mlcNums[1]}+${mlcNums[2]}+${mlcParts[3].split('').join('+')}+${mlcParts[4].split('').join('+')}=${r12Total};sumDigits(${r12Total.toString().split('').join('+')})`;
+            const r12Exp = `${mlcNums[0]}+${mlcNums[1]}+${mlcNums[2]}+${mlcParts[3].split('').join('+')}+${mlcParts[4].split('').join('+')}=${r12Total}`;
 
             const results = [
                 { rule: 'Rule 1', value: result1, exp: exp1 },
