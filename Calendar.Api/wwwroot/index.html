@@ -362,8 +362,7 @@
             const mlcNums = mlcParts.map(Number);
             const r12Total = mlcNums[0] + mlcNums[1] + mlcNums[2] +
                 sumDigits(mlcNums[3]) + sumDigits(mlcNums[4]);
-            const r12Single = digitalRoot(r12Total);
-            const r12Exp = `${mlcNums[0]}+${mlcNums[1]}+${mlcNums[2]}+${mlcParts[3].split('').join('+')}+${mlcParts[4].split('').join('+')}=${r12Total}`;
+            const r12Exp = `${mlcNums[0]}+${mlcNums[1]}+${mlcNums[2]}+${mlcParts[3].split('').join('+')}+${mlcParts[4].split('').join('+')}=<strong>${r12Total}</strong>`;
 
             const results = [
                 { rule: 'Rule 1', value: result1, exp: exp1 },
@@ -377,7 +376,7 @@
                 { rule: 'Rule 9', value: rule9, exp: rule9Exp },
                 { rule: 'Rule 10', value: rule10, exp: rule10Exp },
                 { rule: 'Rule 11', value: rule11, exp: rule11Exp },
-                { rule: 'Rule 12', value: r12Single, exp: r12Exp }
+                { rule: 'Rule 12', value: r12Total, exp: r12Exp }
             ];
             currentResults = results;
 
@@ -397,7 +396,11 @@
                 const val = Math.abs(r.value);
                 const matched = entryNumbers.includes(val);
                 if (matched) matches.push({ rule: r.rule, number: val });
-                output += `<li${matched ? ' class="match"' : ''}>${r.rule}: ${r.exp} = <strong>${val}</strong></li>`;
+                if (r.rule === 'Rule 12') {
+                    output += `<li${matched ? ' class="match"' : ''}>${r.rule}: ${r.exp}</li>`;
+                } else {
+                    output += `<li${matched ? ' class="match"' : ''}>${r.rule}: ${r.exp} = <strong>${val}</strong></li>`;
+                }
             });
             output += '</ul>';
             calcArea.innerHTML = output;
@@ -503,7 +506,7 @@
             const jMonthDigits = julianParts[1].split('').map(Number);
             const jYearDigits = julianParts[2].split('').map(Number);
             const r12 = [...jDayDigits, ...jMonthDigits, ...jYearDigits].reduce((a, b) => a + b, 0) + 1;
-            const rule12Exp = `${jDayDigits.join('+')}+${jMonthDigits.join('+')}+${jYearDigits.join('+')}+1`;
+            const rule12Exp = `${jDayDigits.join('+')}+${jMonthDigits.join('+')}+${jYearDigits.join('+')}+1=<strong>${r12}</strong>`;
 
             const r13 = r12 + CONST_18;
             const rule13Exp = `${r12}+${CONST_18}`;
@@ -720,7 +723,11 @@
                 if (matched) {
                     matches.push({ rule: r.rule, number: val });
                 }
-                output += `<li${matched ? ' class="match"' : ''}>${r.rule}: ${r.exp} = <strong>${val}</strong></li>`;
+                if (r.rule === 'Rule 12') {
+                    output += `<li${matched ? ' class="match"' : ''}>${r.rule}: ${r.exp}</li>`;
+                } else {
+                    output += `<li${matched ? ' class="match"' : ''}>${r.rule}: ${r.exp} = <strong>${val}</strong></li>`;
+                }
             });
             output += '</ul>';
             calcArea.innerHTML = output;
@@ -852,7 +859,7 @@
                     haabSpan.textContent = data.haab;
                     hebrewSpan.textContent = data.hebrewDate;
                     const r12 = mayanRule12(data.mayanLongCount);
-                    rule12Span.textContent = `${r12.total} / ${r12.single}`;
+                    rule12Span.textContent = r12.total;
                     currentDates = data;
                     updateCalculations();
                     fetchEntry();
