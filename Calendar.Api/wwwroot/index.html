@@ -99,6 +99,7 @@
         <li>Tzolkin: <span id="tzolkin-date"></span></li>
         <li>Haab: <span id="haab-date"></span></li>
         <li>Hebrew: <span id="hebrew-date"></span></li>
+        <li>Rule 12 (Mayan): <span id="rule12-result"></span></li>
     </ul>
 
     <script>
@@ -244,6 +245,16 @@
                 result = sumDigits(result);
             }
             return result;
+        }
+
+        // Rule 12 (Mayan Long Count)
+        // Returns the sum of the components plus the digital root
+        function mayanRule12(str) {
+            const parts = str.split('.').map(Number);
+            const total = parts[0] + parts[1] + parts[2] +
+                sumDigits(parts[3]) + sumDigits(parts[4]);
+            const single = digitalRoot(total);
+            return { total, single };
         }
 
         function sumDigitsRule1(n) {
@@ -817,6 +828,7 @@
         const tzolkinSpan = document.getElementById('tzolkin-date');
         const haabSpan = document.getElementById('haab-date');
         const hebrewSpan = document.getElementById('hebrew-date');
+        const rule12Span = document.getElementById('rule12-result');
 
         function loadDate(dateString) {
             fetch(`/api/date/convert?date=${dateString}`)
@@ -830,6 +842,8 @@
                     tzolkinSpan.textContent = data.tzolkin;
                     haabSpan.textContent = data.haab;
                     hebrewSpan.textContent = data.hebrewDate;
+                    const r12 = mayanRule12(data.mayanLongCount);
+                    rule12Span.textContent = `${r12.total} / ${r12.single}`;
                     currentDates = data;
                     updateCalculations();
                     fetchEntry();
