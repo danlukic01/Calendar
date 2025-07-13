@@ -99,6 +99,7 @@
         <li>Tzolkin: <span id="tzolkin-date"></span></li>
         <li>Haab: <span id="haab-date"></span></li>
         <li>Hebrew: <span id="hebrew-date"></span></li>
+        <li>Rule 12 (Mayan): <span id="rule12-result"></span></li>
     </ul>
 
     <script>
@@ -246,6 +247,16 @@
             return result;
         }
 
+        // Rule 12 (Mayan Long Count)
+        // Returns the sum of the components plus the digital root
+        function mayanRule12(str) {
+            const parts = str.split('.').map(Number);
+            const total = parts[0] + parts[1] + parts[2] +
+                sumDigits(parts[3]) + sumDigits(parts[4]);
+            const single = digitalRoot(total);
+            return { total, single };
+        }
+
         function sumDigitsRule1(n) {
             const digits = n.toString().split('').map(Number);
             if (digits.length === 2) {
@@ -346,6 +357,14 @@
             const rule11 = 20 + dayDigits.reduce((a,b)=>a+b,0);
             const rule11Exp = `20+${dayDigits.join('+')}`;
 
+            // Rule 12 (Mayan Long Count)
+            const mlcParts = currentDates.mayanLongCount.split('.');
+            const mlcNums = mlcParts.map(Number);
+            const r12Total = mlcNums[0] + mlcNums[1] + mlcNums[2] +
+                sumDigits(mlcNums[3]) + sumDigits(mlcNums[4]);
+            const r12Single = digitalRoot(r12Total);
+            const r12Exp = `${mlcNums[0]}+${mlcNums[1]}+${mlcNums[2]}+${mlcParts[3].split('').join('+')}+${mlcParts[4].split('').join('+')}=${r12Total};sumDigits(${r12Total.toString().split('').join('+')})`;
+
             const results = [
                 { rule: 'Rule 1', value: result1, exp: exp1 },
                 { rule: 'Rule 2', value: result2, exp: exp2 },
@@ -357,7 +376,8 @@
                 { rule: 'Rule 8', value: rule8, exp: rule8Exp },
                 { rule: 'Rule 9', value: rule9, exp: rule9Exp },
                 { rule: 'Rule 10', value: rule10, exp: rule10Exp },
-                { rule: 'Rule 11', value: rule11, exp: rule11Exp }
+                { rule: 'Rule 11', value: rule11, exp: rule11Exp },
+                { rule: 'Rule 12', value: r12Single, exp: r12Exp }
             ];
             currentResults = results;
 
@@ -817,6 +837,7 @@
         const tzolkinSpan = document.getElementById('tzolkin-date');
         const haabSpan = document.getElementById('haab-date');
         const hebrewSpan = document.getElementById('hebrew-date');
+        const rule12Span = document.getElementById('rule12-result');
 
         function loadDate(dateString) {
             fetch(`/api/date/convert?date=${dateString}`)
@@ -830,6 +851,8 @@
                     tzolkinSpan.textContent = data.tzolkin;
                     haabSpan.textContent = data.haab;
                     hebrewSpan.textContent = data.hebrewDate;
+                    const r12 = mayanRule12(data.mayanLongCount);
+                    rule12Span.textContent = `${r12.total} / ${r12.single}`;
                     currentDates = data;
                     updateCalculations();
                     fetchEntry();
