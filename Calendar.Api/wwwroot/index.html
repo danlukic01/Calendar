@@ -301,6 +301,7 @@
 
         function tattslottoCalculations(date) {
             const CONST_19 = 19;
+            const CONST_18 = 18;
             const gDay = date.getUTCDate();
             const gMonth = date.getUTCMonth() + 1;
             const gYear = date.getUTCFullYear();
@@ -364,6 +365,15 @@
                 sumDigits(mlcNums[3]) + sumDigits(mlcNums[4]);
             const r12Exp = `${mlcNums[0]}+${mlcNums[1]}+${mlcNums[2]}+${mlcParts[3].split('').join('+')}+${mlcParts[4].split('').join('+')}=<strong>${r12Total}</strong>`;
 
+            const rule13 = CONST_18 + gDay + gMonth;
+            const rule13Exp = `${CONST_18}+${gDay}+${gMonth}`;
+
+            const rule14 = CONST_18 + julianSum;
+            const rule14Exp = `${CONST_18}+${julianDigits.join('+')}`;
+
+            const rule15 = CONST_18 + julianSum + gMonth;
+            const rule15Exp = `${CONST_18}+${julianDigits.join('+')}+${gMonth}`;
+
             const results = [
                 { rule: 'Rule 1', value: result1, exp: exp1 },
                 { rule: 'Rule 2', value: result2, exp: exp2 },
@@ -376,7 +386,10 @@
                 { rule: 'Rule 9', value: rule9, exp: rule9Exp },
                 { rule: 'Rule 10', value: rule10, exp: rule10Exp },
                 { rule: 'Rule 11', value: rule11, exp: rule11Exp },
-                { rule: 'Rule 12', value: r12Total, exp: r12Exp }
+                { rule: 'Rule 12', value: r12Total, exp: r12Exp },
+                { rule: 'Rule 13', value: rule13, exp: rule13Exp },
+                { rule: 'Rule 14', value: rule14, exp: rule14Exp },
+                { rule: 'Rule 15', value: rule15, exp: rule15Exp }
             ];
             currentResults = results;
 
