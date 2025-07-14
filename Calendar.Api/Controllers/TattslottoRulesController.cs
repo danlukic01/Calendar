@@ -24,19 +24,23 @@ namespace Calendar.Api.Controllers
                 return BadRequest("Invalid day or month");
             }
 
-            int a = RuleA(day, month, DateMatrix);
-            int b = RuleB(day, month, DateMatrix);
-            int c = RuleC(a, b);
 
-            return Ok(new { ruleA = a, ruleB = b, ruleC = c });
+            int r16 = Rule16(day, month, DateMatrix);
+            int r17 = Rule17(day, month, DateMatrix);
+            int r18 = Rule18(r16, r17);
+
+            return Ok(new { rule16 = r16, rule17 = r17, rule18 = r18 });
         }
 
-        private static int RuleA(int day, int month, Dictionary<int, int> matrix)
+
         {
             return day + matrix[day] + month + matrix[month];
         }
 
-        private static int RuleB(int day, int month, Dictionary<int, int> matrix)
+
+        private static int Rule17(int day, int month, Dictionary<int, int> matrix)
+
+
         {
             var digits = day.ToString().Select(d => int.Parse(d.ToString()))
                 .Concat(month.ToString().Select(m => int.Parse(m.ToString())));
@@ -48,10 +52,12 @@ namespace Calendar.Api.Controllers
             return sum;
         }
 
-        private static int RuleC(int ruleA, int ruleB)
+
+        private static int Rule18(int rule16, int rule17)
         {
-            var digits = ruleA.ToString().Select(c => int.Parse(c.ToString()));
-            return ruleB + digits.Sum();
+            var digits = rule16.ToString().Select(c => int.Parse(c.ToString()));
+            return rule17 + digits.Sum();
+
         }
     }
 }

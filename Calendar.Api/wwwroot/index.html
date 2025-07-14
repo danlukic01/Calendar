@@ -306,6 +306,13 @@
             const gMonth = date.getUTCMonth() + 1;
             const gYear = date.getUTCFullYear();
 
+            const dateMatrix = {
+                1:1, 2:2, 3:3, 4:4, 5:5, 6:6, 7:7, 8:8, 9:9,
+                10:10, 11:11, 12:12, 13:13, 14:1, 15:2, 16:3, 17:4, 18:5,
+                19:6, 20:7, 21:8, 22:9, 23:10, 24:11, 25:12, 26:13,
+                27:1, 28:2, 29:3, 30:4, 31:5
+            };
+
             const n1 = CONST_19 + gDay;
             const prime1 = nthPrime(n1);
             const { value: result1, exp: digitsExp1 } = sumDigitsRule1(prime1);
@@ -375,6 +382,17 @@
             const rule15 = CONST_18 + julianSum + julianMonth;
             const rule15Exp = `${CONST_18}+${julianDigits.join('+')}+${julianMonth}`;
 
+            const rule16 = gDay + dateMatrix[gDay] + gMonth + dateMatrix[gMonth];
+            const rule16Exp = `${gDay}+${dateMatrix[gDay]}+${gMonth}+${dateMatrix[gMonth]}`;
+
+            const digitsFor17 = [...gDay.toString().split(''), ...gMonth.toString().split('')].map(Number);
+            const rule17 = digitsFor17.reduce((a, b) => a + dateMatrix[b], 0);
+            const rule17Exp = digitsFor17.map(d => dateMatrix[d]).join('+');
+
+            const digits16 = rule16.toString().split('').map(Number);
+            const rule18 = rule17 + digits16.reduce((a, b) => a + b, 0);
+            const rule18Exp = `${rule17}+${digits16.join('+')}`;
+
             const results = [
                 { rule: 'Rule 1', value: result1, exp: exp1 },
                 { rule: 'Rule 2', value: result2, exp: exp2 },
@@ -390,7 +408,10 @@
                 { rule: 'Rule 12', value: r12Total, exp: r12Exp },
                 { rule: 'Rule 13', value: rule13, exp: rule13Exp },
                 { rule: 'Rule 14', value: rule14, exp: rule14Exp },
-                { rule: 'Rule 15', value: rule15, exp: rule15Exp }
+                { rule: 'Rule 15', value: rule15, exp: rule15Exp },
+                { rule: 'Rule 16', value: rule16, exp: rule16Exp },
+                { rule: 'Rule 17', value: rule17, exp: rule17Exp },
+                { rule: 'Rule 18', value: rule18, exp: rule18Exp }
             ];
             currentResults = results;
 
