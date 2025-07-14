@@ -525,11 +525,11 @@ function buildCalendarSection(name, teamA, teamB, dataA, dataB) {
     const sec = document.createElement('div');
     sec.className = 'calendar-section';
     const heading = document.createElement('h3');
+    const totalScoreA = pointsA + rootPts.pointsA;
+    const totalScoreB = pointsB + rootPts.pointsB;
     let predicted = 'Draw';
-    if (pointsA > pointsB) predicted = teamA;
-    else if (pointsB > pointsA) predicted = teamB;
-    else if (rootPts.pointsA > rootPts.pointsB) predicted = teamA;
-    else if (rootPts.pointsB > rootPts.pointsA) predicted = teamB;
+    if (totalScoreA > totalScoreB) predicted = teamA;
+    else if (totalScoreB > totalScoreA) predicted = teamB;
     heading.innerHTML = `${name} - Predicted Winner: <strong>${predicted}</strong>`;
     sec.appendChild(heading);
 
@@ -566,11 +566,11 @@ function updatePredictionCard(teamA, teamB, totalA, totalB, rootA, rootB) {
 
     const winnerDiv = document.createElement('div');
     winnerDiv.className = 'predicted-winner';
+    const finalScoreA = totalA + rootA;
+    const finalScoreB = totalB + rootB;
     let overallWinner = 'Draw';
-    if (totalA > totalB) overallWinner = teamA;
-    else if (totalB > totalA) overallWinner = teamB;
-    else if (rootA > rootB) overallWinner = teamA;
-    else if (rootB > rootA) overallWinner = teamB;
+    if (finalScoreA > finalScoreB) overallWinner = teamA;
+    else if (finalScoreB > finalScoreA) overallWinner = teamB;
     winnerDiv.innerHTML = '\uD83C\uDFC6 Predicted Winner: <span class="winner-name">' + overallWinner + '</span>';
     card.appendChild(winnerDiv);
 
@@ -655,11 +655,11 @@ function computeGameScore(teamA, teamB) {
     const rootBreakB = teamNameRootBreakdown(teamB, currentDateRoot);
     rootTotalA += rootBreakA.score;
     rootTotalB += rootBreakB.score;
+    const finalScoreA = totalA + rootTotalA;
+    const finalScoreB = totalB + rootTotalB;
     let yesNoWinner = 'Draw';
-    if (totalA > totalB) yesNoWinner = teamA;
-    else if (totalB > totalA) yesNoWinner = teamB;
-    else if (rootTotalA > rootTotalB) yesNoWinner = teamA;
-    else if (rootTotalB > rootTotalA) yesNoWinner = teamB;
+    if (finalScoreA > finalScoreB) yesNoWinner = teamA;
+    else if (finalScoreB > finalScoreA) yesNoWinner = teamB;
     let rootWinner = 'Draw';
     if (rootTotalA > rootTotalB) rootWinner = teamA;
     else if (rootTotalB > rootTotalA) rootWinner = teamB;
