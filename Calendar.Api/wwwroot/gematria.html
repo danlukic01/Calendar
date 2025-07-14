@@ -529,8 +529,8 @@ function buildCalendarSection(name, teamA, teamB, dataA, dataB) {
     const totalScoreA = pointsA + rootPts.pointsA;
     const totalScoreB = pointsB + rootPts.pointsB;
     let predicted = 'Draw';
-    if (totalScoreA > totalScoreB) predicted = teamA;
-    else if (totalScoreB > totalScoreA) predicted = teamB;
+    if (totalScoreA >= 2 && totalScoreA > totalScoreB) predicted = teamA;
+    else if (totalScoreB >= 2 && totalScoreB > totalScoreA) predicted = teamB;
     heading.innerHTML = `${name} - Predicted Winner: <strong>${predicted}</strong>`;
     sec.appendChild(heading);
 
@@ -570,8 +570,8 @@ function updatePredictionCard(teamA, teamB, totalA, totalB, rootA, rootB) {
     const finalScoreA = totalA + rootA;
     const finalScoreB = totalB + rootB;
     let overallWinner = 'Draw';
-    if (finalScoreA > finalScoreB) overallWinner = teamA;
-    else if (finalScoreB > finalScoreA) overallWinner = teamB;
+    if (finalScoreA >= 2 && finalScoreA > finalScoreB) overallWinner = teamA;
+    else if (finalScoreB >= 2 && finalScoreB > finalScoreA) overallWinner = teamB;
     winnerDiv.innerHTML = '\uD83C\uDFC6 Predicted Winner: <span class="winner-name">' + overallWinner + '</span>';
     card.appendChild(winnerDiv);
 
@@ -659,8 +659,8 @@ function computeGameScore(teamA, teamB) {
     const finalScoreA = totalA + rootTotalA;
     const finalScoreB = totalB + rootTotalB;
     let yesNoWinner = 'Draw';
-    if (finalScoreA > finalScoreB) yesNoWinner = teamA;
-    else if (finalScoreB > finalScoreA) yesNoWinner = teamB;
+    if (finalScoreA >= 2 && finalScoreA > finalScoreB) yesNoWinner = teamA;
+    else if (finalScoreB >= 2 && finalScoreB > finalScoreA) yesNoWinner = teamB;
     let rootWinner = 'Draw';
     if (rootTotalA > rootTotalB) rootWinner = teamA;
     else if (rootTotalB > rootTotalA) rootWinner = teamB;
