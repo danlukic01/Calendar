@@ -229,19 +229,26 @@ function dateToRoot(dateStr) {
     return digitalRoot(sum);
 }
 
-function teamNameRootScore(team, target) {
+function teamNameRootBreakdown(team, target) {
         const words = team.split(/\s+/).filter(w => w.length > 0);
         const combos = [];
         if (words.length > 0) combos.push(words[0]);
         if (words.length > 1) combos.push(words[1]);
         combos.push(team);
+        const matches = [];
         let score = 0;
         combos.forEach(w => {
             const root = digitalRoot(gematriaValue(w));
-            if (root === target) score++;
+            const matched = root === target;
+            if (matched) score++;
+            matches.push({ word: w, root: root, matched: matched });
         });
-        return score;
- }
+        return { score, matches };
+}
+
+function teamNameRootScore(team, target) {
+        return teamNameRootBreakdown(team, target).score;
+}
 
 
 
@@ -428,6 +435,30 @@ function buildTeamTable(team, data, colorClass) {
             });
     });
     div.appendChild(table);
+
+    const rootInfo = teamNameRootBreakdown(team, currentDateRoot);
+    const rootHeading = document.createElement('h5');
+    rootHeading.textContent = `Name Root Matches (${currentDateRoot})`;
+    div.appendChild(rootHeading);
+    const rootTable = document.createElement('table');
+    rootTable.className = 'phrase-table';
+    const rthead = rootTable.createTHead();
+    const rhrow = rthead.insertRow();
+    ['Part', 'Root', 'Points'].forEach(t => {
+        const th = document.createElement('th');
+        th.textContent = t;
+        rhrow.appendChild(th);
+    });
+    const rbody = rootTable.createTBody();
+    rootInfo.matches.forEach(m => {
+        const row = rbody.insertRow();
+        row.insertCell().textContent = m.word;
+        row.insertCell().textContent = m.root;
+        const pt = row.insertCell();
+        pt.textContent = m.matched ? 1 : 0;
+        if (m.matched) pt.className = 'root-score-pos';
+    });
+    div.appendChild(rootTable);
     return div;
 }
 
@@ -620,8 +651,10 @@ function computeGameScore(teamA, teamB) {
         rootTotalA += rootPts.pointsA;
         rootTotalB += rootPts.pointsB;
     });
-    rootTotalA += teamNameRootScore(teamA, currentDateRoot);
-    rootTotalB += teamNameRootScore(teamB, currentDateRoot);
+    const rootBreakA = teamNameRootBreakdown(teamA, currentDateRoot);
+    const rootBreakB = teamNameRootBreakdown(teamB, currentDateRoot);
+    rootTotalA += rootBreakA.score;
+    rootTotalB += rootBreakB.score;
     let yesNoWinner = 'Draw';
     if (totalA > totalB) yesNoWinner = teamA;
     else if (totalB > totalA) yesNoWinner = teamB;
@@ -630,7 +663,9 @@ function computeGameScore(teamA, teamB) {
     let rootWinner = 'Draw';
     if (rootTotalA > rootTotalB) rootWinner = teamA;
     else if (rootTotalB > rootTotalA) rootWinner = teamB;
-    return { totalA, totalB, rootTotalA, rootTotalB, yesNoWinner, rootWinner };
+    return { totalA, totalB, rootTotalA, rootTotalB, yesNoWinner, rootWinner,
+             rootMatchesA: rootBreakA.matches.filter(m=>m.matched).map(m=>m.word),
+             rootMatchesB: rootBreakB.matches.filter(m=>m.matched).map(m=>m.word) };
 }
 
 function normalizeScores(a, b) {
@@ -667,23 +702,23 @@ document.getElementById('batch-run').addEventListener('click', () => {
         const teamA = cleanTeamName(parts[0]);
         const teamB = cleanTeamName(parts[1]);
         if (!teamA || !teamB) return;
-        const { totalA, totalB, rootTotalA, rootTotalB, yesNoWinner, rootWinner } = computeGameScore(teamA, teamB);
+        const { totalA, totalB, rootTotalA, rootTotalB, yesNoWinner, rootWinner, rootMatchesA, rootMatchesB } = computeGameScore(teamA, teamB);
         const normYN = normalizeScores(totalA, totalB);
         const normRoot = normalizeScores(rootTotalA, rootTotalB);
-        results.push({ teamA, teamB, ynA: normYN.a, ynB: normYN.b, rootA: normRoot.a, rootB: normRoot.b, yesNoWinner, rootWinner });
+        results.push({ teamA, teamB, ynA: normYN.a, ynB: normYN.b, rootA: normRoot.a, rootB: normRoot.b, yesNoWinner, rootWinner, rootMatchesA, rootMatchesB });
     });
 
     const table = document.getElementById('batch-results');
     table.innerHTML = '';
     const header = table.insertRow();
-    ['Team A', 'Team B', 'YN % A', 'YN % B', `Root % A (${currentDateRoot})`, `Root % B (${currentDateRoot})`, 'Predicted Winner', 'Root Winner'].forEach(h => {
+    ['Team A', 'Team B', 'YN % A', 'YN % B', `Root % A (${currentDateRoot})`, `Root % B (${currentDateRoot})`, 'Name Matches A', 'Name Matches B', 'Predicted Winner', 'Root Winner'].forEach(h => {
         const th = document.createElement('th');
         th.textContent = h;
         header.appendChild(th);
     });
     results.forEach(r => {
         const row = table.insertRow();
-        [r.teamA, r.teamB, r.ynA, r.ynB, r.rootA, r.rootB].forEach(val => {
+        [r.teamA, r.teamB, r.ynA, r.ynB, r.rootA, r.rootB, r.rootMatchesA.join(' '), r.rootMatchesB.join(' ')].forEach(val => {
             const td = row.insertCell();
             td.textContent = val;
             td.style.padding = '4px';
@@ -698,14 +733,14 @@ document.getElementById('batch-run').addEventListener('click', () => {
 
     if (results.length > 0) {
         document.getElementById('batch-download').style.display = 'inline-block';
-        document.getElementById('batch-download').dataset.csv = results.map(r => `${r.teamA},${r.teamB},${r.ynA},${r.ynB},${r.rootA},${r.rootB},${r.yesNoWinner},${r.rootWinner}`).join('\n');
+        document.getElementById('batch-download').dataset.csv = results.map(r => `${r.teamA},${r.teamB},${r.ynA},${r.ynB},${r.rootA},${r.rootB},${r.rootMatchesA.join(' ')},${r.rootMatchesB.join(' ')},${r.yesNoWinner},${r.rootWinner}`).join('\n');
     } else {
         document.getElementById('batch-download').style.display = 'none';
     }
 });
 
 document.getElementById('batch-download').addEventListener('click', e => {
-    const csvHeader = `Team A,Team B,YN % A,YN % B,Root % A (${currentDateRoot}),Root % B (${currentDateRoot}),Predicted Winner,Root Winner\n`;
+    const csvHeader = `Team A,Team B,YN % A,YN % B,Root % A (${currentDateRoot}),Root % B (${currentDateRoot}),Name Matches A,Name Matches B,Predicted Winner,Root Winner\n`;
     const data = e.target.dataset.csv;
     if (!data) return;
     const blob = new Blob([csvHeader + data], { type: 'text/csv' });
