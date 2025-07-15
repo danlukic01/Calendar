@@ -39,9 +39,10 @@ dotnet ef database update -p Calendar.Api -s Calendar.Api
 ```
 
 ### Entering lotto numbers
-Navigate to `/lotto-entry.html` after the API starts to record Powerball numbers.
-Entries are saved via the `/api/lottoentries` endpoint. If running with a fresh
-database, create a migration for the `LottoEntries` table and apply it:
+Navigate to `/lotto-entry.html` after the API starts to record lotto numbers
+for Powerball, Ozlotto or Tattslotto. Entries are saved via the
+`/api/lottoentries` endpoint. If running with a fresh database, create a
+migration for the `LottoEntries` table and apply it:
 
 ```bash
 dotnet ef migrations add AddLottoEntries -p Calendar.Api -s Calendar.Api
