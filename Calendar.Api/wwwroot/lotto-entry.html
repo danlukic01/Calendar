@@ -76,6 +76,8 @@
             <label for="lotto">Lotto</label>
             <select id="lotto">
                 <option value="Powerball">Powerball</option>
+                <option value="Ozlotto">Ozlotto</option>
+                <option value="Tattslotto">Tattslotto</option>
             </select>
             <label for="draw-date">Draw Date</label>
             <input type="date" id="draw-date" required>
@@ -96,10 +98,38 @@
     </div>
 <script>
 const form = document.getElementById('entry-form');
+const lottoSelect = document.getElementById('lotto');
+const n7 = document.getElementById('n7');
+const powerball = document.getElementById('powerball');
+
+function updateFields() {
+    const lotto = lottoSelect.value;
+    if (lotto === 'Powerball') {
+        powerball.style.display = '';
+        powerball.required = true;
+        n7.style.display = '';
+        n7.required = true;
+    } else if (lotto === 'Ozlotto') {
+        powerball.style.display = 'none';
+        powerball.required = false;
+        n7.style.display = '';
+        n7.required = true;
+    } else { // Tattslotto and others
+        powerball.style.display = 'none';
+        powerball.required = false;
+        n7.style.display = 'none';
+        n7.required = false;
+    }
+}
+
+lottoSelect.addEventListener('change', updateFields);
+updateFields();
+
 form.addEventListener('submit', function(e) {
     e.preventDefault();
+    const lotto = lottoSelect.value;
     const data = {
-        lottoName: document.getElementById('lotto').value,
+        lottoName: lotto,
         drawDate: document.getElementById('draw-date').value,
         number1: parseInt(document.getElementById('n1').value),
         number2: parseInt(document.getElementById('n2').value),
@@ -107,8 +137,8 @@ form.addEventListener('submit', function(e) {
         number4: parseInt(document.getElementById('n4').value),
         number5: parseInt(document.getElementById('n5').value),
         number6: parseInt(document.getElementById('n6').value),
-        number7: parseInt(document.getElementById('n7').value),
-        powerball: parseInt(document.getElementById('powerball').value)
+        number7: lotto === 'Tattslotto' ? 0 : parseInt(n7.value || 0),
+        powerball: lotto === 'Powerball' ? parseInt(powerball.value) : 0
     };
     fetch('/api/lottoentries', {
         method: 'POST',
