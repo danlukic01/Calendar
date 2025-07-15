@@ -90,6 +90,9 @@
                 <input type="number" id="n5" required>
                 <input type="number" id="n6" required>
                 <input type="number" id="n7" required>
+                <input type="number" id="s1" required placeholder="S1">
+                <input type="number" id="s2" required placeholder="S2">
+                <input type="number" id="s3" required placeholder="S3">
                 <input type="number" id="powerball" required placeholder="PB">
             </div>
             <button type="submit">Save</button>
@@ -101,6 +104,9 @@ const form = document.getElementById('entry-form');
 const lottoSelect = document.getElementById('lotto');
 const n7 = document.getElementById('n7');
 const powerball = document.getElementById('powerball');
+const s1 = document.getElementById('s1');
+const s2 = document.getElementById('s2');
+const s3 = document.getElementById('s3');
 
 function updateFields() {
     const lotto = lottoSelect.value;
@@ -109,16 +115,34 @@ function updateFields() {
         powerball.required = true;
         n7.style.display = '';
         n7.required = true;
+        s1.style.display = 'none';
+        s1.required = false;
+        s2.style.display = 'none';
+        s2.required = false;
+        s3.style.display = 'none';
+        s3.required = false;
     } else if (lotto === 'Ozlotto') {
         powerball.style.display = 'none';
         powerball.required = false;
         n7.style.display = '';
         n7.required = true;
+        s1.style.display = '';
+        s1.required = true;
+        s2.style.display = '';
+        s2.required = true;
+        s3.style.display = '';
+        s3.required = true;
     } else { // Tattslotto and others
         powerball.style.display = 'none';
         powerball.required = false;
         n7.style.display = 'none';
         n7.required = false;
+        s1.style.display = '';
+        s1.required = true;
+        s2.style.display = '';
+        s2.required = true;
+        s3.style.display = 'none';
+        s3.required = false;
     }
 }
 
@@ -138,7 +162,10 @@ form.addEventListener('submit', function(e) {
         number5: parseInt(document.getElementById('n5').value),
         number6: parseInt(document.getElementById('n6').value),
         number7: lotto === 'Tattslotto' ? 0 : parseInt(n7.value || 0),
-        powerball: lotto === 'Powerball' ? parseInt(powerball.value) : 0
+        powerball: lotto === 'Powerball' ? parseInt(powerball.value) : 0,
+        supplement1: lotto === 'Powerball' ? 0 : parseInt(s1.value || 0),
+        supplement2: lotto === 'Powerball' ? 0 : parseInt(s2.value || 0),
+        supplement3: lotto === 'Ozlotto' ? parseInt(s3.value || 0) : 0
     };
     fetch('/api/lottoentries', {
         method: 'POST',
@@ -148,6 +175,7 @@ form.addEventListener('submit', function(e) {
         if (res.ok) {
             document.getElementById('message').textContent = 'Saved';
             form.reset();
+            updateFields();
         } else {
             document.getElementById('message').textContent = 'Error saving';
         }
