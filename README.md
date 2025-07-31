@@ -49,6 +49,14 @@ dotnet ef migrations add AddLottoEntries -p Calendar.Api -s Calendar.Api
 dotnet ef database update -p Calendar.Api -s Calendar.Api
 ```
 
+After adding support for supplement numbers, generate a follow-up migration so
+the additional columns exist in the database:
+
+```bash
+dotnet ef migrations add AddLottoSupplements -p Calendar.Api -s Calendar.Api
+dotnet ef database update -p Calendar.Api -s Calendar.Api
+```
+
 Viewing predictions on `/index.html` now records every calculated lotto number.
 Both matched and unmatched numbers are stored via the `/api/lottomatches`
 endpoint and can be queried by lotto name, draw date and match status.

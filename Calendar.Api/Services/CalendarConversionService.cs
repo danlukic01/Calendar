@@ -88,6 +88,11 @@ public class CalendarConversionService
     private static string ToHebrewString(DateTime date)
     {
         var hebrew = new System.Globalization.HebrewCalendar();
+        if (date < hebrew.MinSupportedDateTime || date > hebrew.MaxSupportedDateTime)
+        {
+            return string.Empty;
+        }
+
         int year = hebrew.GetYear(date);
         int month = hebrew.GetMonth(date);
         int day = hebrew.GetDayOfMonth(date);
