@@ -56,6 +56,16 @@ the additional columns exist in the database:
 dotnet ef migrations add AddLottoSupplements -p Calendar.Api -s Calendar.Api
 dotnet ef database update -p Calendar.Api -s Calendar.Api
 ```
+If `dotnet ef` is unavailable, run the SQL script under
+`scripts/AddLottoSupplements.sql` to manually add the supplement columns.
+
+```sql
+-- execute against the RiskManagement database
+ALTER TABLE LottoEntries
+ADD Supplement1 int NOT NULL DEFAULT 0,
+    Supplement2 int NOT NULL DEFAULT 0,
+    Supplement3 int NOT NULL DEFAULT 0;
+```
 
 Viewing predictions on `/index.html` now records every calculated lotto number.
 Both matched and unmatched numbers are stored via the `/api/lottomatches`
