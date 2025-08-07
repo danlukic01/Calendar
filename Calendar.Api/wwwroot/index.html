@@ -771,6 +771,25 @@
                 const sr4 = tz11.number + tz7_11.number + tz14_11.number;
                 const sr4Exp = `${tz11.number}+${tz7_11.number}+${tz14_11.number}`;
                 results.push({ rule: 'Super Rule 4', value: sr4, exp: sr4Exp });
+
+                const tzMinus126 = toTzolkin(dateMinus126);
+                const hbMinus126 = toHaab(dateMinus126);
+                const sr5a = tzMinus126.number + hbMinus126.day + CONST_9;
+                const sr5aExp = `${tzMinus126.number}+${hbMinus126.day}+${CONST_9}`;
+                results.push({ rule: 'Super Rule 5', value: sr5a, exp: sr5aExp });
+
+                const dateMinus126Plus126 = new Date(Date.UTC(dateMinus126.getUTCFullYear() + 126, dateMinus126.getUTCMonth(), dateMinus126.getUTCDate()));
+                const tzMinusPlus126 = toTzolkin(dateMinus126Plus126);
+                const hbMinusPlus126 = toHaab(dateMinus126Plus126);
+                const sr5b = tzMinusPlus126.number + hbMinusPlus126.day;
+                const sr5bExp = `${tzMinusPlus126.number}+${hbMinusPlus126.day}`;
+                results.push({ rule: 'Super Rule 5', value: sr5b, exp: sr5bExp });
+
+                const tz7Minus126 = toTzolkin(new Date(Date.UTC(dateMinus126.getUTCFullYear(), dateMinus126.getUTCMonth(), dateMinus126.getUTCDate() + 7)));
+                const tz14Minus126 = toTzolkin(new Date(Date.UTC(dateMinus126.getUTCFullYear(), dateMinus126.getUTCMonth(), dateMinus126.getUTCDate() + 14)));
+                const sr5c = tzMinus126.number + tz7Minus126.number + tz14Minus126.number;
+                const sr5cExp = `${tzMinus126.number}+${tz7Minus126.number}+${tz14Minus126.number}`;
+                results.push({ rule: 'Super Rule 5', value: sr5c, exp: sr5cExp });
             }
 
             currentResults = results;
