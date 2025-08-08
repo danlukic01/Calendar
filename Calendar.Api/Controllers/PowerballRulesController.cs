@@ -26,7 +26,11 @@ namespace Calendar.Api.Controllers
             int jDay = julianCal.GetDayOfMonth(julianDate);
 
             int gPlusH = gDay + hDay;
-            int gPlusHPlusJPlus1 = gDay + hDay + jDay + 1;
+            int gPlusJ = gDay + jDay;
+            int hPlusJ = hDay + jDay;
+            int gPlusHPlusJ = gDay + hDay + jDay;
+            int gPlusHPlusJPlus1 = gPlusHPlusJ + 1;
+
             int gPlus9 = gDay + 9;
             int hPlus9 = hDay + 9;
             int jPlus9 = jDay + 9;
@@ -37,6 +41,9 @@ namespace Calendar.Api.Controllers
                 hebrewDay = hDay,
                 julianDay = jDay,
                 gregorianPlusHebrew = gPlusH,
+                gregorianPlusJulian = gPlusJ,
+                hebrewPlusJulian = hPlusJ,
+                gregorianPlusHebrewPlusJulian = gPlusHPlusJ,
                 gregorianPlusHebrewPlusJulianPlusOne = gPlusHPlusJPlus1,
                 gregorianPlus9 = gPlus9,
                 hebrewPlus9 = hPlus9,
