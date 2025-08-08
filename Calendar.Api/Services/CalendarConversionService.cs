@@ -6,15 +6,15 @@ public class CalendarConversionService
 {
     public CalendarDate Convert(DateTime gregorian)
     {
-        var dateOnly = gregorian.Date;
+        var adjusted = gregorian.Date.AddDays(-126);
         return new CalendarDate
         {
-            GregorianDate = dateOnly,
-            JulianDate = ToJulianString(dateOnly),
-            MayanLongCount = ToMayanLongCount(dateOnly),
-            Tzolkin = ToTzolkin(dateOnly),
-            Haab = ToHaab(dateOnly),
-            HebrewDate = ToHebrewString(dateOnly),
+            GregorianDate = adjusted,
+            JulianDate = ToJulianString(adjusted),
+            MayanLongCount = ToMayanLongCount(adjusted),
+            Tzolkin = ToTzolkin(adjusted),
+            Haab = ToHaab(adjusted),
+            HebrewDate = ToHebrewString(adjusted),
             CreatedAt = DateTime.UtcNow
         };
     }
