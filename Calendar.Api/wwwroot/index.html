@@ -183,6 +183,23 @@
             "Kib'", "Kab'an", "Etz'nab'", 'Kawak', 'Ajaw'
         ];
 
+        const hebrewMonthMap = {
+            'Tishri': 1,
+            'Heshvan': 2,
+            'Kislev': 3,
+            'Tevet': 4,
+            'Shevat': 5,
+            'Adar I': 6,
+            'Adar': 7,
+            'Adar II': 7,
+            'Nisan': 8,
+            'Iyar': 9,
+            'Sivan': 10,
+            'Tamuz': 11,
+            'Av': 12,
+            'Elul': 13
+        };
+
         function parseMayan(str) {
             const parts = str.split('.').map(Number);
             return {
@@ -790,6 +807,38 @@
                 const sr5c = tzMinus126.number + tz7Minus126.number + tz14Minus126.number;
                 const sr5cExp = `${tzMinus126.number}+${tz7Minus126.number}+${tz14Minus126.number}`;
                 results.push({ rule: 'Super Rule 5', value: sr5c, exp: sr5cExp });
+
+                const datePlus126Days = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + 126));
+
+                const gDay126 = datePlus126Days.getUTCDate();
+                const gMonthDigits126 = (datePlus126Days.getUTCMonth() + 1).toString().split('').map(Number);
+                const sr6g1 = gDay126;
+                const sr6g1Exp = `${gDay126}`;
+                results.push({ rule: 'Super Rule 6', value: sr6g1, exp: sr6g1Exp });
+                const sr6g2 = gDay126 + gMonthDigits126.reduce((a, b) => a + b, 0);
+                const sr6g2Exp = `${gDay126}+${gMonthDigits126.join('+')}`;
+                results.push({ rule: 'Super Rule 6', value: sr6g2, exp: sr6g2Exp });
+
+                const jdn126 = gregorianToJdn(datePlus126Days);
+                const j126 = jdnToJulian(jdn126);
+                const jMonthDigits126 = j126.month.toString().split('').map(Number);
+                const sr6j1 = j126.day - 9;
+                const sr6j1Exp = `${j126.day}-9`;
+                results.push({ rule: 'Super Rule 6', value: sr6j1, exp: sr6j1Exp });
+                const sr6j2 = j126.day + jMonthDigits126.reduce((a, b) => a + b, 0);
+                const sr6j2Exp = `${j126.day}+${jMonthDigits126.join('+')}`;
+                results.push({ rule: 'Super Rule 6', value: sr6j2, exp: sr6j2Exp });
+
+                const hebrewStr126 = new Intl.DateTimeFormat('en-u-ca-hebrew', { day: 'numeric', month: 'long', year: 'numeric' }).format(datePlus126Days);
+                const hebrewParts126 = hebrewStr126.split(' ');
+                const hDay126 = parseInt(hebrewParts126[0], 10);
+                const hMonth126 = hebrewMonthMap[hebrewParts126[1]] || 0;
+                const sr6h1 = hDay126;
+                const sr6h1Exp = `${hDay126}`;
+                results.push({ rule: 'Super Rule 6', value: sr6h1, exp: sr6h1Exp });
+                const sr6h2 = hDay126 + hMonth126 + CONST_9;
+                const sr6h2Exp = `${hDay126}+${hMonth126}+${CONST_9}`;
+                results.push({ rule: 'Super Rule 6', value: sr6h2, exp: sr6h2Exp });
             }
 
             currentResults = results;
