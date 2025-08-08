@@ -98,6 +98,7 @@ The response will include:
 
 The endpoint `/api/tattslottorules/system126` adds 126 days, months, weeks and years to a base date (defaults to today) and returns each resulting date along with the sum of its digits and equivalent Julian, Mayan long count, Tzolkin, Haab and Hebrew dates.
 
+
 Example:
 
 ```bash

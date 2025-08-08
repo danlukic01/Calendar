@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tattslotto System 126</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f7fa;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 0;
+            color: #333;
+        }
+        nav.main-nav {
+            margin-bottom: 20px;
+        }
+        nav.main-nav a {
+            margin: 0 10px;
+            color: #333;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .card {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 20px 30px;
+            max-width: 800px;
+            width: 90%;
+        }
+        h1 {
+            margin-top: 0;
+            font-size: 1.5rem;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 4px 6px;
+            text-align: left;
+        }
+        th {
+            background: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <nav class="main-nav">
+        <a href="index.html">Predict</a>
+        <a href="lotto-entry.html">Enter Numbers</a>
+        <a href="gematria.html">Gematria</a>
+        <a href="system126.html">System 126</a>
+    </nav>
+    <div class="card">
+        <h1>Tattslotto System 126</h1>
+        <input type="date" id="date-picker" style="width:100%;padding:8px;" />
+        <div id="results"></div>
+    </div>
+    <script>
+        const picker = document.getElementById('date-picker');
+        const resultsDiv = document.getElementById('results');
+
+        function render(data) {
+            const rows = Object.entries(data).map(([key, val]) => {
+                return `<tr><th>${key}</th>` +
+                    `<td>${val.gregorianDate}</td>` +
+                    `<td>${val.digitSum}</td>` +
+                    `<td>${val.julianDate}</td>` +
+                    `<td>${val.mayanLongCount}</td>` +
+                    `<td>${val.tzolkin}</td>` +
+                    `<td>${val.haab}</td>` +
+                    `<td>${val.hebrewDate}</td></tr>`;
+            }).join('');
+            resultsDiv.innerHTML = `<table><thead><tr><th>Offset</th><th>Gregorian</th><th>Digit Sum</th><th>Julian</th><th>Mayan Long Count</th><th>Tzolkin</th><th>Haab</th><th>Hebrew</th></tr></thead><tbody>${rows}</tbody></table>`;
+        }
+
+        function load(date) {
+            fetch(`/api/tattslottorules/system126?date=${date}`)
+                .then(r => r.json())
+                .then(render);
+        }
+
+        picker.addEventListener('change', () => load(picker.value));
+        const today = new Date().toISOString().split('T')[0];
+        picker.value = today;
+        load(today);
+    </script>
+</body>
+</html>
