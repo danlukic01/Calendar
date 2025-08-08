@@ -463,7 +463,7 @@
             }
         }
 
-        function ozlottoCalculations(date, use22 = false) {
+        async function ozlottoCalculations(date, use22 = false) {
 
             const CONST_21 = use22 ? 22 : 21;
             const CONST_11 = 11;
@@ -860,6 +860,18 @@
                 const sr6hj = hMonth126 + j126.month;
                 const sr6hjExp = `${hMonth126}+${j126.month}`;
                 results.push({ rule: 'Super Rule 6', value: sr6hj, exp: sr6hjExp });
+
+                const sr7Data = await fetch('/api/powerballrules/superrule7').then(r => r.json());
+                const addDate = new Date(sr7Data.addedDate + 'Z');
+                const subDate = new Date(sr7Data.subtractedDate + 'Z');
+                const sr7Digits = [
+                    ...addDate.getUTCDate().toString().split(''),
+                    ...(addDate.getUTCMonth() + 1).toString().split(''),
+                    ...subDate.getUTCDate().toString().split(''),
+                    ...(subDate.getUTCMonth() + 1).toString().split('')
+                ];
+                const sr7Exp = sr7Digits.join('+');
+                results.push({ rule: 'Super Rule 7', value: sr7Data.superRule7, exp: sr7Exp });
             }
 
             currentResults = results;
@@ -921,7 +933,7 @@
                 });
         }
 
-        function updateCalculations() {
+        async function updateCalculations() {
 
             const config = lotteryConstants[select.value];
             if (!config || !currentDates) {
@@ -932,7 +944,7 @@
             if (['Ozlotto', 'Powerball'].includes(select.value)) {
                 const g = new Date(currentDates.gregorianDate + 'Z');
                 const use22 = select.value === 'Powerball';
-                ozlottoCalculations(g, use22);
+                await ozlottoCalculations(g, use22);
                 const firstConst = use22 ? 22 : 21;
                 display.textContent = `Constants: ${firstConst}, 11, 18, 10`;
                 return;
