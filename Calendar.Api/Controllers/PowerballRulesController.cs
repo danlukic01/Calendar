@@ -53,11 +53,11 @@ namespace Calendar.Api.Controllers
         }
 
         [HttpGet("superrule7")]
-        public ActionResult<object> GetSuperRule7()
+        public ActionResult<object> GetSuperRule7([FromQuery] DateTime? date)
         {
-            DateTime today = DateTime.Today;
-            DateTime plusNine = today.AddDays(9);
-            DateTime minusNine = today.AddDays(-9);
+            DateTime baseDate = (date ?? DateTime.Today).Date;
+            DateTime plusNine = baseDate.AddDays(9);
+            DateTime minusNine = baseDate.AddDays(-9);
 
             int SumDigits(int value) => value.ToString().Sum(c => int.Parse(c.ToString()));
 

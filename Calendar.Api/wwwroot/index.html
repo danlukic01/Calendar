@@ -861,7 +861,8 @@
                 const sr6hjExp = `${hMonth126}+${j126.month}`;
                 results.push({ rule: 'Super Rule 6', value: sr6hj, exp: sr6hjExp });
 
-                const sr7Data = await fetch('/api/powerballrules/superrule7').then(r => r.json());
+                const dateStr = date.toISOString().split('T')[0];
+                const sr7Data = await fetch(`/api/powerballrules/superrule7?date=${dateStr}`).then(r => r.json());
                 const addDate = new Date(sr7Data.addedDate + 'Z');
                 const subDate = new Date(sr7Data.subtractedDate + 'Z');
                 const sr7Digits = [
