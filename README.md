@@ -94,3 +94,25 @@ The response will include:
 
 
 ```
+
+### Powerball rules API
+
+The endpoint `/api/powerballrules/superrule7` applies Powerball Super Rule 7. It
+adds and subtracts nine days from today's Gregorian date and sums the digits of
+the resulting day and month values.
+
+Example:
+
+```bash
+curl "http://localhost:5000/api/powerballrules/superrule7"
+```
+
+Example response:
+
+```json
+{
+  "addedDate": "2023-08-16",
+  "subtractedDate": "2023-07-29",
+  "superRule7": 33
+}
+```

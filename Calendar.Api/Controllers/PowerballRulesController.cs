@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Globalization;
+using System.Linq;
 
 namespace Calendar.Api.Controllers
 {
@@ -48,6 +49,26 @@ namespace Calendar.Api.Controllers
                 gregorianPlus9 = gPlus9,
                 hebrewPlus9 = hPlus9,
                 julianPlus9 = jPlus9
+            });
+        }
+
+        [HttpGet("superrule7")]
+        public ActionResult<object> GetSuperRule7()
+        {
+            DateTime today = DateTime.Today;
+            DateTime plusNine = today.AddDays(9);
+            DateTime minusNine = today.AddDays(-9);
+
+            int SumDigits(int value) => value.ToString().Sum(c => int.Parse(c.ToString()));
+
+            int total = SumDigits(plusNine.Day) + SumDigits(plusNine.Month) +
+                        SumDigits(minusNine.Day) + SumDigits(minusNine.Month);
+
+            return Ok(new
+            {
+                addedDate = plusNine.ToString("yyyy-MM-dd"),
+                subtractedDate = minusNine.ToString("yyyy-MM-dd"),
+                superRule7 = total
             });
         }
     }
