@@ -92,7 +92,16 @@ The response will include:
 
 { "rule16": 20 }
 
+```
 
+### Tattslotto system 126
+
+The endpoint `/api/tattslottorules/system126` adds 126 days, months, weeks and years to a base date (defaults to today) and returns each resulting date along with the sum of its digits and equivalent Julian, Mayan long count, Tzolkin, Haab and Hebrew dates.
+
+Example:
+
+```bash
+curl "http://localhost:5000/api/tattslottorules/system126"
 ```
 
 ### Powerball rules API
